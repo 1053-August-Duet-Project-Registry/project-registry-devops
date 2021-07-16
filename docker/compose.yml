@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  consul:
+    image: consul
+    ports:
+    - "8500:8500"
+
+  gateway:
+    build: ./project-registry-gateway/
+    ports:
+    - "8085:8085"
+    environment:
+    - SPRING_CLOUD_CONSUL_HOST=consul
+
+  account:
+    build: ./project-registry-account-microservice/
+    environment:
+    - SPRING_CLOUD_CONSUL_HOST=consul
+
+  tracking:
+    build: ./project-registry-tracking-microservice/
+    environment:
+    - SPRING_CLOUD_CONSUL_HOST=consul
+
+  project:
+    build: ./project-registry-project-microservice/
+    environment:
+    - SPRING_CLOUD_CONSUL_HOST=consul
+
