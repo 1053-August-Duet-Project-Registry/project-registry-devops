@@ -23,5 +23,6 @@
 
 3. Run `docker compose up` from the same directory as `compose.yml` (in this case, `project-registry`)
 
-To ensure that the project is working correctly, navigate to `localhost:8500` to see the Consul UI and check that the gateway, project, tracking, and account microservices are all running.  
-Note that at this time the frontend application is not currently in the Docker Swarm.
+To ensure that the project is working correctly, navigate to `localhost:4200` to see if the front end is up and running.
+
+## Note that at this time, `project-registry-gateway` must be on branch `feature-consul-gateway` and `project-registry-frontend` must be on branch `DevOps-Working`.
