@@ -21,7 +21,11 @@ spec:
         ports:
         - containerPort: 4200
         env:
-        - REGISTRY_URL="gateway:8085/api/"
+        - name: REGISTRY_URL
+          valueFrom:
+            configMapKeyRef:
+              name: project-configmap
+              key: REGISTRY_URL
 
 ---
 

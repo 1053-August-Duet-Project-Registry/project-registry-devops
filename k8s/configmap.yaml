@@ -4,3 +4,4 @@ metadata:
   name: project-configmap
 data:
   SPRING_CLOUD_CONSUL_HOST: consul
+  REGISTRY_URL: gateway:8085/api/
