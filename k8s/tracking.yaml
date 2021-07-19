@@ -21,8 +21,13 @@ spec:
         ports:
         - containerPort: 8083
         env:
-        - SPRING_CLOUD_CONSUL_HOST=consul
-        - SPRING_APPLICATION_NAME=tracking-microservice
+        - name: SPRING_CLOUD_CONSUL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: project-configmap
+              key: SPRING_CLOUD_CONSUL_HOST
+        - name: SPRING_APPLICATION_NAME
+          value: tracking-microservice
 
 ---
 

@@ -21,7 +21,11 @@ spec:
         ports:
         - containerPort: 8085
         env:
-        - SPRING_CLOUD_CONSUL_HOST=consul
+        - name: SPRING_CLOUD_CONSUL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: project-configmap
+              key: SPRING_CLOUD_CONSUL_HOST
 
 ---
 
