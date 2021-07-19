@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: project
-        image: team1/project:latest
+        image: 'team1/project:latest'
         resources:
           limits:
             memory: "128Mi"

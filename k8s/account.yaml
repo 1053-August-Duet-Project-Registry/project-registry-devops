@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: account
-        image: team1/account
+        image: 'team1/account'
         resources:
           limits:
             memory: "128Mi"

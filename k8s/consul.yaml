@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: consul
-        image: team1/consul:latest
+        image: 'team1/consul:latest'
         resources:
           limits:
             memory: "128Mi"

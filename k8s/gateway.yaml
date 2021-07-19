@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: team1/gateway:lastest
+        image: 'team1/gateway:lastest'
         resources:
           limits:
             memory: "128Mi"

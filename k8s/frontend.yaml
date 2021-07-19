@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: team1/frontend:latest
+        image: 'team1/frontend:latest'
         resources:
           limits:
             memory: "128Mi"
