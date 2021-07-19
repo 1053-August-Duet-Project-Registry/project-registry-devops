@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project
+spec:
+  selector:
+    matchLabels:
+      app: project
+  template:
+    metadata:
+      labels:
+        app: project
+    spec:
+      containers:
+      - name: project
+        image: team1/project:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8082
+        env:
+        - SPRING_CLOUD_CONSUL_HOST=consul
+        - SPRING_APPLICATION_NAME=project-microservice
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-service
+spec:
+  type: NodePort
+  selector:
+    app: project
+  ports:
+  - port: 8082
+    targetPort: 8082
+

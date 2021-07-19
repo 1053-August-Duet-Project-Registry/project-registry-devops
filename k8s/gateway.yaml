@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        image: team1/gateway:lastest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8085
+        env:
+        - SPRING_CLOUD_CONSUL_HOST=consul
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  type: NodePort
+  selector:
+    app: gateway
+  ports:
+  - port: 8085
+    targetPort: 8085
+
+
