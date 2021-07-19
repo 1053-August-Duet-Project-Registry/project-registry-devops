@@ -30,14 +30,14 @@ steps:
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'install'
-    workingDir: './$(Build.SourceBranchNamee)/${{ parameters.workDir }}'
+    workingDir: './$(Build.SourceBranchName)/${{ parameters.workDir }}'
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
 - task: AngularCLI@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'build'
-    project: './$(Build.SourceBranchNamee)/${{ parameters.workDir }}'
+    project: './$(Build.SourceBranchName)/${{ parameters.workDir }}'
     prod: false
     DisableAnalytics: true
   displayName: Build ${{ parameters.microservice }} --> Task
@@ -64,7 +64,7 @@ steps:
     publishJUnitresults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/$(Build.SourceBranchNamee)/${{ parameters.coveragePath }}
+    codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/$(Build.SourceBranchName)/${{ parameters.coveragePath }}
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     mavenVersionOption: 'Default'
@@ -92,7 +92,7 @@ steps:
           __**Team 1 P3**__  Analysis Report
           **Build Number:** $(Build.BuildNumber)
           **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
-          **Repo:** $(Build.SourceBranchNamee)
+          **Repo:** $(Build.SourceBranchName)
           **Branch:** $(Build.SourceBranch)
           **Trigger:** = $(Build.Reason)
           **Status:** $(Agent.JobStatus)
