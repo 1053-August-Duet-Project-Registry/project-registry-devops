@@ -2,4 +2,4 @@
 
 git add .
 git commit -m 'testing helm'
-git push origin branch-helm
+git push origin feature-helm
