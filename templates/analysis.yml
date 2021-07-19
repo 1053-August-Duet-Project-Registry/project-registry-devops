@@ -92,8 +92,8 @@ steps:
           __**Team 1 P3**__  Analysis Report
           **Build Number:** $(Build.BuildNumber)
           **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
-          **Repo:** $(Build.Repository.LocalPath)/project-registry-${{ parameters.microservice }}
+          **Repo:** https://github.com/1053-August-Duet-Project-Registry/project-registry-${{ parameters.microservice }}
           **Branch:** $(Build.SourceBranch)
-          **Trigger:** = $(Build.Reason)
+          **Trigger:** $(Build.Reason)
           **Status:** $(Agent.JobStatus)
   displayName: Notification --> Task
