@@ -6,12 +6,20 @@ services:
     ports:
     - "8500:8500"
 
+  frontend:
+      build: ./project-registry-frontend/
+      ports:
+      - "4200:80"
+      environment: 
+      - REGISTRY_URL="gateway:8085/api/"
+
   gateway:
     build: ./project-registry-gateway/
     ports:
     - "8085:8085"
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
+    #- SPRING_APPLICATION_JSON="{'spring':{'cloud':{'gateway':{'globalcors':{'corsConfigurations':{'\'[**]\'':{'allowedOrigins':'frontend:80'}}}}}}}"
 
   account:
     build: ./project-registry-account-microservice/
@@ -22,9 +30,11 @@ services:
     build: ./project-registry-tracking-microservice/
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
+    - SPRING_APPLICATION_NAME=tracking-microservice
 
   project:
     build: ./project-registry-project-microservice/
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
+    - SPRING_APPLICATION_NAME=project-microservice
 
