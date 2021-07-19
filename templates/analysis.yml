@@ -90,7 +90,7 @@ steps:
     messageType: 'content'
     content: | 
           __**Team 1 P3**__  Analysis Report
-          **Build Number:** $(Build.BuildNumber)
+          **Build ID:** $(Build.BuildId)
           **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
           **Repo:** https://github.com/1053-August-Duet-Project-Registry/project-registry-${{ parameters.microservice }}
           **Branch:** $(Build.SourceBranch)
