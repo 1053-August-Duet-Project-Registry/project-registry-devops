@@ -14,10 +14,6 @@ parameters:
   type: boolean
   default: false
 
-variables:
-- group: project-registry-sonarcloud
-- group: project-registry-discord
-
 steps:
 - task: SonarCloudPrepare@1
   enabled: ${{ parameters.angular }}
