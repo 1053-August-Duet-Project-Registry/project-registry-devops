@@ -18,88 +18,92 @@ variables:
 - group: project-registry-sonarcloud
 - group: project-registry-discord
 
-steps:
-- task: SonarCloudPrepare@1
-  enabled: ${{ parameters.angular }}
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: $(sonarOrgName)
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: $(sonarFrontendKey)
-    cliSources: '.'
-  displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
-      
-- task: Npm@1
-  enabled: ${{ parameters.angular }}
-  inputs:
-    command: 'install'
-    workingDir: './${{ parameters.workDir }}'
-  displayName: Install dependencies for ${{ parameters.microservice }} --> Task
+jobs: 
+- job: analysis
 
-- task: AngularCLI@1
-  enabled: ${{ parameters.angular }}
-  inputs:
-    command: 'build'
-    project: './${{ parameters.workDir }}'
-    prod: false
-    DisableAnalytics: true
-  displayName: Build ${{ parameters.microservice }} --> Task
+  steps:
+  - task: SonarCloudPrepare@1
+    enabled: ${{ parameters.angular }}
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: $(sonarOrgName)
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: $(sonarFrontendKey)
+      cliSources: '.'
+    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+        
+  - task: Npm@1
+    enabled: ${{ parameters.angular }}
+    inputs:
+      command: 'install'
+      workingDir: './$(Build.Repository.Name)/${{ parameters.workDir }}'
+    displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-- task: SonarCloudAnalyze@1
-  enabled: ${{ parameters.angular }}
-  displayName: Analyze ${{ parameters.microservice }} --> Task
+  - task: AngularCLI@1
+    enabled: ${{ parameters.angular }}
+    inputs:
+      command: 'build'
+      project: './$(Build.Repository.Name)/${{ parameters.workDir }}'
+      prod: false
+      DisableAnalytics: true
+    displayName: Build ${{ parameters.microservice }} --> Task
 
-- task: SonarCloudPrepare@1
-  enabled: ${{ parameters.maven }}
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: $(sonarOrgName)
-    scannerMode: 'Other'
-    extraProperties: 
-      sonar.projectKey=$(sonarFrontendKey)
-      sonar.projectName=$(sonarFrontendName)
-  displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+  - task: SonarCloudAnalyze@1
+    enabled: ${{ parameters.angular }}
+    displayName: Analyze ${{ parameters.microservice }} --> Task
 
-- task: 'Maven@3'
-  enabled: ${{ parameters.maven }}
-  inputs:
-    mavenPomFile: ./pom.xml
-    publishJUnitresults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/${{ parameters.coveragePath }}
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    mavenVersionOption: 'Default'
-    mavenOptions: '-Xmx3072m'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: true
-    sqMavenPluginVersionChoice: 'latest'
-  displayName: Build/Analyze ${{ parameters.microservice }} --> Task
+  - task: SonarCloudPrepare@1
+    enabled: ${{ parameters.maven }}
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: $(sonarOrgName)
+      scannerMode: 'Other'
+      extraProperties: 
+        sonar.projectKey=$(sonarFrontendKey)
+        sonar.projectName=$(sonarFrontendName)
+    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-- task: SonarCloudPublish@1
-  condition: always()
-  inputs:
-    pollingTimeoutSec: '300'
-  displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
+  - task: 'Maven@3'
+    enabled: ${{ parameters.maven }}
+    inputs:
+      mavenPomFile: ./pom.xml
+      publishJUnitresults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      codeCoverageToolOption: 'JaCoCo'
+      codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/$(Build.Repository.Name)/${{ parameters.coveragePath }}
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.11'
+      mavenVersionOption: 'Default'
+      mavenOptions: '-Xmx3072m'
+      mavenAuthenticateFeed: false
+      effectivePomSkip: false
+      sonarQubeRunAnalysis: true
+      sqMavenPluginVersionChoice: 'latest'
+    displayName: Build/Analyze ${{ parameters.microservice }} --> Task
 
-- task: 'ado-discord-webhook@1'
-  condition: always()
-  inputs:
-    channelId: $(discord-channel-id)
-    webhookKey: $(discord-webhook-key)
-    name: 'Project Registry Analysis'
-    messageType: 'content'
-    content: | 
-          __**Team 1 P3**__  Analysis Report
-          **Build Number:** $(Build.BuildNumber)
-          **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
-          **Repo:** $(Build.Repository.Name)
-          **Branch:** $(Build.SourceBranch)
-          **Trigger:** = $(Build.Reason)
-          **Status:** $(Agent.JobStatus)
-  displayName: Notification --> Task
+  - task: SonarCloudPublish@1
+    condition: always()
+    inputs:
+      pollingTimeoutSec: '300'
+    displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
+  - task: 'ado-discord-webhook@1'
+    condition: always()
+    inputs:
+      channelId: $(discord-channel-id)
+      webhookKey: $(discord-webhook-key)
+      name: 'Project Registry Analysis'
+      messageType: 'content'
+      content: | 
+            __**Team 1 P3**__  Analysis Report
+            **Build Number:** $(Build.BuildNumber)
+            **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
+            **Repo:** $(Build.Repository.Name)
+            **Branch:** $(Build.SourceBranch)
+            **Trigger:** = $(Build.Reason)
+            **Status:** $(Agent.JobStatus)
+    displayName: Notification --> Task
+
+  displayName: Analysis of ${{ parameters.microservice }} --> job
 
