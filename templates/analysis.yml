@@ -99,6 +99,15 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
+- script: |
+          echo __**Team 1 P3**__  Analysis Report
+          echo **Build Logs:** https://dev.azure.com/${{ parameters.projectOrg }}/${{ parameters.projectName }}/_build/results?buildId=$(Build.BuildId)&view=logs
+          echo **Analysis Report:** ${{ parameters.sonarUrlPrefix }}${{ parameters.sonarKey }}
+          echo **Repo:** ${{ parameters.gitUrlPrefix }}${{ parameters.microservice }}
+          echo **Branch:** $(Build.SourceBranch)
+          echo **Trigger:** $(Build.Reason)
+          echo **Status:** $(Agent.JobStatus)
+
 - task: 'ado-discord-webhook@1'
   condition: always()
   inputs:
