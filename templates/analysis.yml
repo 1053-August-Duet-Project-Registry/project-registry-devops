@@ -107,6 +107,8 @@ steps:
           echo **Branch:** $(Build.SourceBranch)
           echo **Trigger:** $(Build.Reason)
           echo **Status:** $(Agent.JobStatus)
+  condition: always()
+  displayName: string check
 
 - task: 'ado-discord-webhook@1'
   condition: always()
