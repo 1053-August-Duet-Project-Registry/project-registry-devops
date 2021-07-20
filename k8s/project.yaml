@@ -13,11 +13,14 @@ spec:
     spec:
       containers:
       - name: project
-        image: 'team1/project:latest'
+        image: 'danielhine/project-registry-project:latest'
         resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "750m"
           limits:
-            memory: "128Mi"
-            cpu: "500m"
+            memory: "1024Mi"
+            cpu: "750m"
         ports:
         - containerPort: 8082
         env:
@@ -34,7 +37,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: project-service
+  name: project
 spec:
   type: NodePort
   selector:

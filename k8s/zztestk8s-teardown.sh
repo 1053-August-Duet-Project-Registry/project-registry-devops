@@ -1,4 +1,4 @@
-#! /usr/bin#! /usr/bin
+#! /usr/bin/bash
 
 kubectl delete -f configmap.yaml
 kubectl delete -f consul.yaml

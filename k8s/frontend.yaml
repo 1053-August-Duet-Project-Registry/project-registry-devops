@@ -13,11 +13,11 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 'team1/frontend:latest'
+        image: 'danielhine/project-registry-frontend:latest'
         resources:
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "125m"
         ports:
         - containerPort: 4200
         env:
@@ -32,7 +32,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: frontend
 spec:
   type: LoadBalancer
   selector:

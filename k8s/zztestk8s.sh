@@ -1,4 +1,4 @@
-#! /usr/bin#! /usr/bin
+#!/usr/bin/bash
 
 kubectl apply -f configmap.yaml
 kubectl apply -f consul.yaml
