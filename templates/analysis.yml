@@ -23,21 +23,21 @@ steps:
     scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
-    cliSources: './${{ parameters.workDir }}'
+    cliSources: '${{ parameters.workDir }}'
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
       
 - task: Npm@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'install'
-    workingDir: './${{ parameters.workDir }}'
+    workingDir: '${{ parameters.workDir }}'
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
 - task: AngularCLI@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'build'
-    project: './${{ parameters.workDir }}'
+    project: '${{ parameters.workDir }}'
     prod: false
     DisableAnalytics: true
   displayName: Build ${{ parameters.microservice }} --> Task
