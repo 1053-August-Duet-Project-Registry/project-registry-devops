@@ -12,6 +12,10 @@
 # - project-registry-discord: stores discord variables/secrets
 #   - discordAnalysisChannel: the output channel for discord analysis info
 #   - discordAnalysisKey: the webhook key associated with the above channel
+# Example of calling the variable groups:
+#   variables:
+#   - group: project-registry-sonarcloud
+#   - group: project-registry-discord
 #
 # Functionality Caveat: Angular builds not successfully tested
 # ---------------------
