@@ -1,43 +1,73 @@
+# External requirements:
+# ----------------------
+# In order to guard secrets, two variable groups must be present in the
+# ADO library and called in the pipeline YAML file before using this
+# template.
+# These variable groups have the following names and contents:
+# - project-registry-sonarcloud: stores sonarcloud variables/secrets
+#   - sonarKeyPrefix: the common prefix string for the sonar keys in the project
+#   - sonarNamePrefix: the common prefix string for the project names
+#   - sonarOrg: the sonar organization
+#   - sonarUrlPrefix: the common prefix string for the url for the results
+# - project-registry-discord: stores discord variables/secrets
+#   - discordAnalysisChannel: the output channel for discord analysis info
+#   - discordAnalysisKey: the webhook key associated with the above channel
+#
+# Functionality Caveat: Angular builds not successfully tested
+# ---------------------
+# All code blocks using the angular flag have not been successfully tested.  
+# The code not been removed for three reasons:
+# 1) it functions without a template, and so provides a central record of how
+#    the Angular build tasks function
+# 2) we hope to revisit and debug the errors that prevent the template from
+#    functioning as expected.  As it stands, it appears that the Angular tasks
+#    do not function when a job checks out multiple repositories for some reason
+# 3) We believe that the code in this template is correct, but the error appears
+#    to exist on the side of the calling YAML file and associated setup, therefore
+#    a savvy user may be able to utilize the functionality even if we were not
+#    successful in doing so.
+# Therefore, the code is included with the caveat of not being successfully tested
+
 parameters:
-- name: microservice
+- name: microservice  # <-- e.g., gateway, account-microservice
   type: string
-- name: coveragePath
-  type: string
-  default: ''
-- name: workDir
+- name: coveragePath  # <-- may override the coverage path if desired
   type: string
   default: ''
-- name: maven
+- name: workDir       # <-- will need to override with multi-repo subdirectory
+  type: string        #     e.g., ./project-registry-tracking-microservice/
+- name: maven         # <-- maven is the default build method
   type: boolean
   default: true
-- name: angular
+- name: angular       # <-- Not successfully tested; see note above
   type: boolean
   default: false
-- name: orgName
-  type: string
-  default: revature-training-uta
+- name: orgName       # <-- ADO organization has not builtin variable, so it
+  type: string        #     needs to be provided manually
+  default: revature-training-uta  # for now we are leaving this as a default
+                                  # because it is convenient
 
 steps:
-- task: SonarCloudPrepare@1
-  enabled: ${{ parameters.angular }}
+- task: SonarCloudPrepare@1 # <-- See external requirements note above
+  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: $(sonarOrg)
+    organization: $(sonarOrg) 
     scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
     cliSources: '${{ parameters.workDir }}'
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
-      
-- task: Npm@1
-  enabled: ${{ parameters.angular }}
+
+- task: Npm@1 
+  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
   inputs:
     command: 'install'
     workingDir: '${{ parameters.workDir }}'
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
 - task: AngularCLI@1
-  enabled: ${{ parameters.angular }}
+  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
   inputs:
     command: 'build'
     project: '${{ parameters.workDir }}'
@@ -46,10 +76,10 @@ steps:
   displayName: Build ${{ parameters.microservice }} --> Task
 
 - task: SonarCloudAnalyze@1
-  enabled: ${{ parameters.angular }}
+  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
   displayName: Analyze ${{ parameters.microservice }} --> Task
 
-- task: SonarCloudPrepare@1
+- task: SonarCloudPrepare@1 # <-- See external requirements note abovev
   enabled: ${{ parameters.maven }}
   inputs:
     SonarCloud: 'SonarCloud'
@@ -84,7 +114,7 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
-- task: 'ado-discord-webhook@1'
+- task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
     channelId: $(discordAnalysisChannel)
