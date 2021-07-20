@@ -1,3 +1,5 @@
+# SonarCloud configuration for Maven builds expects JDK 11
+#
 # External requirements:
 # ----------------------
 # In order to guard secrets, two variable groups must be present in the
@@ -6,6 +8,7 @@
 # These variable groups have the following names and contents:
 # - project-registry-sonarcloud: stores sonarcloud variables/secrets
 #   - sonarKeyPrefix: the common prefix string for the sonar keys in the project
+#       (requires a sonarCloud project key)
 #   - sonarNamePrefix: the common prefix string for the project names
 #   - sonarOrg: the sonar organization
 #   - sonarUrlPrefix: the common prefix string for the url for the results
@@ -16,6 +19,9 @@
 #   variables:
 #   - group: project-registry-sonarcloud
 #   - group: project-registry-discord
+# Note: The sonar information uses prefixes instead of whole keys so that the secrets
+#       stored in the ADO library are limited, using the microservice piece which is
+#       already being passed as a parameter.
 #
 # Functionality Caveat: Angular builds not successfully tested
 # ---------------------
@@ -40,77 +46,60 @@ parameters:
   default: ''
 - name: workDir       # <-- will need to override with multi-repo subdirectory
   type: string        #     e.g., ./project-registry-tracking-microservice/
-- name: maven         # <-- maven is the default build method
-  type: boolean
-  default: true
 - name: angular       # <-- Not successfully tested; see note above
-  type: boolean
-  default: false
-- name: orgName       # <-- ADO organization has not builtin variable, so it
-  type: string        #     needs to be provided manually
-  default: revature-training-uta  # for now we are leaving this as a default
-                                  # because it is convenient
+  type: boolean       #     (default is a Maven build when angular = false
+  default: false      #      the Angular build steps will substitute when angular = true)
 
 steps:
-- task: SonarCloudPrepare@1 # <-- See external requirements note above
-  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: $(sonarOrg) 
-    scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
-    cliSources: '${{ parameters.workDir }}'
-  displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+- ${{ if eq(parameters.angular, true) }}: # <-- Angular build not successfully tested; see note above
+  - task: SonarCloudPrepare@1 # <-- See external requirements note above
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: $(sonarOrg) 
+      scannerMode: 'CLI'
+      configMode: 'manual'
+      cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
+      cliSources: '${{ parameters.workDir }}'
+    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-- task: Npm@1 
-  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
-  inputs:
-    command: 'install'
-    workingDir: '${{ parameters.workDir }}'
-  displayName: Install dependencies for ${{ parameters.microservice }} --> Task
+  - script: cd ${{ parameters.workDir }} && npm ci
+    displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-- task: AngularCLI@1
-  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
-  inputs:
-    command: 'build'
-    project: '${{ parameters.workDir }}'
-    prod: false
-    DisableAnalytics: true
-  displayName: Build ${{ parameters.microservice }} --> Task
+  - script: npx ng build
+    displayName: Build ${{ parameters.microservice }} --> Task
 
-- task: SonarCloudAnalyze@1
-  enabled: ${{ parameters.angular }} # <-- Not successfully tested; see note above
-  displayName: Analyze ${{ parameters.microservice }} --> Task
+  - task: SonarCloudAnalyze@1
+    displayName: Analyze ${{ parameters.microservice }} --> Task
+# End of Angular-specific Analysis Steps --> if
 
-- task: SonarCloudPrepare@1 # <-- See external requirements note abovev
-  enabled: ${{ parameters.maven }}
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: $(sonarOrg)
-    scannerMode: 'Other'
-    extraProperties: |
-      sonar.projectKey=$(sonarKeyPrefix)${{ parameters.microservice }}
-      sonar.projectName=$(sonarNamePrefix)${{ parameters.microservice }}
-  displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+- ${{ if eq(parameters.angular, false) }}:  # <-- Maven build is the default
+  - task: SonarCloudPrepare@1 # <-- See external requirements note above
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: $(sonarOrg)
+      scannerMode: 'Other'
+      extraProperties: |
+        sonar.projectKey=$(sonarKeyPrefix)${{ parameters.microservice }}
+        sonar.projectName=$(sonarNamePrefix)${{ parameters.microservice }}
+    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-- task: 'Maven@3'
-  enabled: ${{ parameters.maven }}
-  inputs:
-    mavenPomFile: ${{ parameters.workDir }}pom.xml
-    publishJUnitresults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: ${{ parameters.coveragePath }}
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    mavenVersionOption: 'Default'
-    mavenOptions: '-Xmx3072m'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: true
-    sqMavenPluginVersionChoice: 'latest'
-  displayName: Build/Analyze ${{ parameters.microservice }} --> Task
+  - task: 'Maven@3'
+    inputs:
+      mavenPomFile: ${{ parameters.workDir }}pom.xml
+      publishJUnitresults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      codeCoverageToolOption: 'JaCoCo'
+      codeCoverageClassFilesDirectories: ${{ parameters.coveragePath }}
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.11'
+      mavenVersionOption: 'Default'
+      mavenOptions: '-Xmx3072m'
+      mavenAuthenticateFeed: false
+      effectivePomSkip: false
+      sonarQubeRunAnalysis: true
+      sqMavenPluginVersionChoice: 'latest'
+    displayName: Build/Analyze ${{ parameters.microservice }} --> Task
+# End of Maven-specific Analysis steps --> if
 
 - task: SonarCloudPublish@1
   condition: always()
@@ -132,6 +121,6 @@ steps:
           **Trigger:** $(Build.Reason)
           **Message:** $(Build.SourceVersionMessage)
           **Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
-          **Logs:** https://dev.azure.com/${{ parameters.orgName }}/$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs
+          **Logs:** $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs
           **Repo:** https://github.com/$(Build.Repository.Name)
   displayName: Notification --> Task
