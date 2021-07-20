@@ -20,7 +20,9 @@ parameters:
 - name: sonarName
   type: string
 - name: projectName
-  type: projectOrg
+  type: string
+- name: projectOrg
+  type: string
 - name: sonarUrlPrefix
   type: string
 - name: gitUrlPrefix
