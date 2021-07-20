@@ -52,7 +52,7 @@ steps:
     SonarCloud: 'SonarCloud'
     organization: $(sonarOrg)
     scannerMode: 'Other'
-    extraProperties: 
+    extraProperties: |
       sonar.projectKey=$(sonarKeyPrefix)${{ parameters.microservice }}
       sonar.projectName=$(sonarNamePrefix)${{ parameters.microservice }}
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
@@ -89,10 +89,10 @@ steps:
     name: $(System.TeamProject)
     messageType: 'content'
     content: | 
-          __**Analysis Report**__
-          **Build Logs:** $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs
-          **Analysis Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
-          **Repo:** https://github.com/$(Build.Repository.Name)
+          **__Analysis Report__**
+          **Build Number:** $(Build.BuildNumber)
+          **Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
+          **Repo:** $(Build.Repository.Name)
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
           **Status:** $(Agent.JobStatus)
