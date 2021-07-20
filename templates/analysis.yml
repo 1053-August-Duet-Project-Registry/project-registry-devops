@@ -13,16 +13,32 @@ parameters:
 - name: angular
   type: boolean
   default: false
+- name: sonarOrg
+  type: string
+- name: sonarKey
+  type: string
+- name: sonarName
+  type: string
+- name: projectName
+  type: projectOrg
+- name: sonarUrlPrefix
+  type: string
+- name: gitUrlPrefix
+  type: string
+- name: discordId
+  type: string
+- name: discordKey
+  type: string
 
 steps:
 - task: SonarCloudPrepare@1
   enabled: ${{ parameters.angular }}
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: $(sonarOrgName)
+    organization: ${{ parameters.sonarOrg }}
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: $(sonarFrontendKey)
+    cliProjectKey: ${{ parameters.sonarKey }}
     cliSources: '.'
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
       
@@ -30,14 +46,14 @@ steps:
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'install'
-    workingDir: '$(Build.Repository.LocalPath)/project-registry-${{ parameters.microservice }}/${{ parameters.workDir }}'
+    workingDir: ${{ parameters.workDir }}
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
 - task: AngularCLI@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'build'
-    project: '$(Build.Repository.LocalPath)/project-registry-${{ parameters.microservice }}/${{ parameters.workDir }}'
+    project: ${{ parameters.workDir }}
     prod: false
     DisableAnalytics: true
   displayName: Build ${{ parameters.microservice }} --> Task
@@ -50,11 +66,11 @@ steps:
   enabled: ${{ parameters.maven }}
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: $(sonarOrgName)
+    organization: ${{ parameters.sonarOrg }}
     scannerMode: 'Other'
     extraProperties: 
-      sonar.projectKey=$(sonarFrontendKey)
-      sonar.projectName=$(sonarFrontendName)
+      sonar.projectKey=${{ parameters.sonarKey }}
+      sonar.projectName=${{ parameters.sonarName }}
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
 - task: 'Maven@3'
@@ -64,7 +80,7 @@ steps:
     publishJUnitresults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/$(Build.Repository.LocalPath)/project-registry-${{ parameters.microservice }}/${{ parameters.coveragePath }}
+    codeCoverageClassFilesDirectories: ${{ parameters.workDir }}**
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     mavenVersionOption: 'Default'
@@ -84,15 +100,15 @@ steps:
 - task: 'ado-discord-webhook@1'
   condition: always()
   inputs:
-    channelId: $(discord-channel-id)
-    webhookKey: $(discord-webhook-key)
+    channelId: ${{ parameters.discordId }}
+    webhookKey: ${{ parameters.discordKey }}
     name: 'Project Registry Analysis'
     messageType: 'content'
     content: | 
           __**Team 1 P3**__  Analysis Report
-          **Build ID:** $(Build.BuildId)
-          **Report:** https://sonarcloud.io/dashboard?branch=$(Build.SourceBranch)&id=$(sonarFrontendKey)
-          **Repo:** https://github.com/1053-August-Duet-Project-Registry/project-registry-${{ parameters.microservice }}
+          **Build Logs:** https://dev.azure.com/${{ parameters.projectOrg }}/${{ parameters.projectName }}/_build/results?buildId=$(Build.BuildId)&view=logs
+          **Analysis Report:** ${{ parameters.sonarUrlPrefix }}${{ parameters.sonarKey }}
+          **Repo:** ${{ parameters.gitUrlPrefix }}${{ parameters.microservice }}
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
           **Status:** $(Agent.JobStatus)
