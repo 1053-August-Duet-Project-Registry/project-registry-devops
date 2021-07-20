@@ -60,7 +60,7 @@ steps:
 - task: 'Maven@3'
   enabled: ${{ parameters.maven }}
   inputs:
-    mavenPomFile: ./pom.xml
+    mavenPomFile: ${{ parameters.workDir }}pom.xml
     publishJUnitresults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     codeCoverageToolOption: 'JaCoCo'
