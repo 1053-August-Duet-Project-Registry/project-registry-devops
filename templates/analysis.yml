@@ -13,23 +13,7 @@ parameters:
 - name: angular
   type: boolean
   default: false
-- name: sonarOrg
-  type: string
-- name: sonarKey
-  type: string
-- name: sonarName
-  type: string
-- name: projectName
-  type: string
-- name: projectOrg
-  type: string
-- name: sonarUrlPrefix
-  type: string
-- name: gitUrlPrefix
-  type: string
-- name: discordId
-  type: string
-- name: discordKey
+- name: notificationDisplayName
   type: string
 
 steps:
@@ -37,25 +21,25 @@ steps:
   enabled: ${{ parameters.angular }}
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: ${{ parameters.sonarOrg }}
+    organization: $(sonarOrg)
     scannerMode: 'CLI'
     configMode: 'manual'
-    cliProjectKey: ${{ parameters.sonarKey }}
-    cliSources: '.'
+    cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
+    cliSources: './${{ parameters.workDir }}'
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
       
 - task: Npm@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'install'
-    workingDir: ${{ parameters.workDir }}
+    workingDir: './${{ parameters.workDir }}'
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
 - task: AngularCLI@1
   enabled: ${{ parameters.angular }}
   inputs:
     command: 'build'
-    project: ${{ parameters.workDir }}
+    project: './${{ parameters.workDir }}'
     prod: false
     DisableAnalytics: true
   displayName: Build ${{ parameters.microservice }} --> Task
@@ -68,11 +52,11 @@ steps:
   enabled: ${{ parameters.maven }}
   inputs:
     SonarCloud: 'SonarCloud'
-    organization: ${{ parameters.sonarOrg }}
+    organization: $(sonarOrg)
     scannerMode: 'Other'
     extraProperties: 
-      sonar.projectKey=${{ parameters.sonarKey }}
-      sonar.projectName=${{ parameters.sonarName }}
+      sonar.projectKey=$(sonarKeyPrefix)${{ parameters.microservice }}
+      sonar.projectName=$(sonarNamePrefix)${{ parameters.microservice }}
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
 - task: 'Maven@3'
@@ -82,7 +66,7 @@ steps:
     publishJUnitresults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: ${{ parameters.workDir }}**
+    codeCoverageClassFilesDirectories: $(Agent.BuildDirectory)/${{ parameters.coveragePath }}
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     mavenVersionOption: 'Default'
@@ -99,29 +83,18 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
-- script: |
-          echo __**Team 1 P3**__  Analysis Report
-          echo **Build Logs:** https://dev.azure.com/${{ parameters.projectOrg }}/${{ parameters.projectName }}/_build/results?buildId=$(Build.BuildId)&view=logs
-          echo **Analysis Report:** ${{ parameters.sonarUrlPrefix }}${{ parameters.sonarKey }}
-          echo **Repo:** ${{ parameters.gitUrlPrefix }}${{ parameters.microservice }}
-          echo **Branch:** $(Build.SourceBranch)
-          echo **Trigger:** $(Build.Reason)
-          echo **Status:** $(Agent.JobStatus)
-  condition: always()
-  displayName: string check
-
 - task: 'ado-discord-webhook@1'
   condition: always()
   inputs:
-    channelId: ${{ parameters.discordId }}
-    webhookKey: ${{ parameters.discordKey }}
-    name: 'Project Registry Analysis'
+    channelId: $(discordAnalysisChannel)
+    webhookKey: $(discordAnalysisKey)
+    name: ${{ parameters.notificationDisplayName }}
     messageType: 'content'
     content: | 
-          __**Team 1 P3**__  Analysis Report
+          __**Analysis Report**__
           **Build Logs:** https://dev.azure.com/${{ parameters.projectOrg }}/${{ parameters.projectName }}/_build/results?buildId=$(Build.BuildId)&view=logs
-          **Analysis Report:** ${{ parameters.sonarUrlPrefix }}${{ parameters.sonarKey }}
-          **Repo:** ${{ parameters.gitUrlPrefix }}${{ parameters.microservice }}
+          **Analysis Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
+          **Repo:** https://github.com/$(Build.Repository.Name)
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
           **Status:** $(Agent.JobStatus)
