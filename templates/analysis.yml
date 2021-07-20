@@ -86,7 +86,7 @@ steps:
   inputs:
     channelId: $(discordAnalysisChannel)
     webhookKey: $(discordAnalysisKey)
-    name: ${{ parameters.projectName }}
+    name: $(System.TeamProject)
     messageType: 'content'
     content: | 
           __**Analysis Report**__
