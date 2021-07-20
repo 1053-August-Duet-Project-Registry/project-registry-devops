@@ -2,26 +2,34 @@
 # Running locally via Docker Compose
 
 1. Install Docker: [Docker Desktop](https://docs.docker.com/docker-for-windows/install/) is recommended, but any method that gets Docker and Docker Compose on your machine will do.
-2. Clone Repositories: Move the `compose.yml` file into the directory containing the microservice repositories. Your file structure should look something like this:
+2. Clone Repositories: Clone the microservice repositories next to the devops repository, keeping the default names. Your file structure should look something like this:
 
         - project-registry
-          ├─ compose.yml
+          ├─ project-registry-devops
+	  |   ├─ compose.yml
+          |   └─ <rest of repository>
+          |
           ├─ project-registry-frontend
-          |   └ <contents of repository>
+	  |   ├─ Dockerfile
+          |   └─ <rest of repository>
           |
           ├─ project-registry-gateway
-          |   └ <contents of repository>
+	  |   ├─ Dockerfile
+          |   └─ <rest of repository>
           |
           ├─ project-registry-project-microservice
-          |   └ <contents of repository>
+	  |   ├─ Dockerfile
+          |   └─ <rest of repository>
           |
           ├─ project-registry-tracking-microservice
-          |   └ <contents of repository>
+	  |   ├─ Dockerfile
+          |   └─ <rest of repository>
           |
           └─ project-registry-account-microservice
-              └ <contents of repository>
+	      ├─ Dockerfile
+              └─ <rest of repository>
 
-3. Run `docker-compose up` from the same directory as `compose.yml` (in this case, `project-registry`)
+3. Run `docker-compose up` from the project-registry-devops folder.
 
 To ensure that the project is working correctly, navigate to `localhost:4200` to see if the front end is up and running.
 

@@ -6,10 +6,10 @@ services:
     ports:
     - "8500:8500" # This port doesn't need to be open for the program
                   # to work, but it allows for monitoring as the
-		  # application starts up
+                  # application starts up
 
   frontend:
-      build: ./project-registry-frontend/
+      build: ../project-registry-frontend/
       ports:
       - "4200:80"
       environment: 
@@ -19,7 +19,7 @@ services:
 # to connect the gateway to consul
 
   gateway:
-    build: ./project-registry-gateway/
+    build: ../project-registry-gateway/
     ports:
     - "8085:8085" # This port is also not necessary for the program
                   # to work, but it is useful in debugging
@@ -28,19 +28,19 @@ services:
     - SPRING_APPLICATION_NAME=gateway-microservice
 
   account:
-    build: ./project-registry-account-microservice/
+    build: ../project-registry-account-microservice/
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
     - SPRING_APPLICATION_NAME=account-microservice
 
   tracking:
-    build: ./project-registry-tracking-microservice/
+    build: ../project-registry-tracking-microservice/
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
     - SPRING_APPLICATION_NAME=tracking-microservice
 
   project:
-    build: ./project-registry-project-microservice/
+    build: ../project-registry-project-microservice/
     environment:
     - SPRING_CLOUD_CONSUL_HOST=consul
     - SPRING_APPLICATION_NAME=project-microservice
