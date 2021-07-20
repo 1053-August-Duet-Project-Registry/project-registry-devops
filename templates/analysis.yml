@@ -13,6 +13,9 @@ parameters:
 - name: angular
   type: boolean
   default: false
+- name: orgName
+  type: string
+  default: revature-training-uta
 
 steps:
 - task: SonarCloudPrepare@1
@@ -90,10 +93,11 @@ steps:
     messageType: 'content'
     content: | 
           **__Analysis Report__**
-          **Build Number:** $(Build.BuildNumber)
-          **Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
-          **Repo:** $(Build.Repository.Name)
+          **Status:** $(Agent.JobStatus)
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
-          **Status:** $(Agent.JobStatus)
+          **Message:** $(Build.SourceVersionMessage)
+          **Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
+          **Logs:** https://dev.azure.com/${{ parameters.orgName }}/$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs
+          **Repo:** https://github.com/$(Build.Repository.Name)
   displayName: Notification --> Task
