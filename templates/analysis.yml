@@ -103,7 +103,7 @@ steps:
   condition: always()
   inputs:
     channelId: ${{ parameters.discordChannel }}
-    webhookKey: $(discordKey)
+    webhookKey: ${{ parameters.discordKey }}
     name: $(System.TeamProject)
     messageType: 'content'
     content: | 
