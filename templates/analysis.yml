@@ -61,6 +61,9 @@ steps:
       cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
       cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+  
+  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && pwd && ls
+    displayName: Show path and contents
 
   - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm ci
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
