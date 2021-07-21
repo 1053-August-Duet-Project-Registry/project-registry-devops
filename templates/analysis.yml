@@ -120,7 +120,7 @@ steps:
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
           **Message:** $(Build.SourceVersionMessage)
-          **Report:** $(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}
-          **Logs:** $(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs
-          **Repo:** https://github.com/$(Build.Repository.Name)
+          **Report:** <$(sonarUrlPrefix)$(Build.SourceBranch)&id=$(sonarKeyPrefix)${{ parameters.microservice }}>
+          **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
+          **Repo:** <https://github.com/$(Build.Repository.Name)>
   displayName: Notification --> Task
