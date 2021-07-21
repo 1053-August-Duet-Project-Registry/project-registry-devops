@@ -99,6 +99,11 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
+- script: |
+    echo $PARAMETERS_DISCORDCHANNEL
+    echo $PARAMETERS_DISCORDKEY
+  displayName: show discord info
+  
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
