@@ -98,7 +98,7 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
-- ${{ if ne(variables.Build.Reason, "PullRequest") }}:  # <-- Notification for non-pr builds
+- ${{ if ne(variables.Build.Reason, 'PullRequest') }}:  # <-- Notification for non-pr builds
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
@@ -117,7 +117,7 @@ steps:
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Repo:** <$(Build.Repository.Uri)/$(Build.SourceBranchName)>
 
-- ${{ if eq(variables.Build.Reason, "PullRequest") }}:  # <-- Notification for pr builds
+- ${{ if eq(variables.Build.Reason, 'PullRequest') }}:  # <-- Notification for pr builds
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
