@@ -60,6 +60,11 @@ steps:
       configMode: 'manual'
       cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
       cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
+      extraProperties: |
+        # Additional properties that will be passed to the scanner, 
+        # Put one key=value per line, example:
+        # sonar.exclusions=**/*.bin
+        sonar.javascript.lcov.reportPaths=${{ parameters.workDir }}**
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
   
   - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && pwd && ls
