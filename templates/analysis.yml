@@ -76,6 +76,7 @@ steps:
       **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
+  displayName: Notification --> Task
 
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: and(always(), eq(variables['Build.Reason'],'PullRequest'))
@@ -92,4 +93,4 @@ steps:
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Source:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.SourceBranch)>
       **Target:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.TargetBranch)>
-  displayName: Notification --> Task
+  displayName: PR Notification --> Task
