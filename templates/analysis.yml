@@ -59,7 +59,7 @@ steps:
       scannerMode: 'CLI'
       configMode: 'manual'
       cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
-      cliSources: '${{ parameters.workDir }}'
+      cliSources: $(System.DefaultWorkingDirectory)${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
   - script: cd $(System.DefaultWorkingDirectory)${{ parameters.workDir }} && npm ci
