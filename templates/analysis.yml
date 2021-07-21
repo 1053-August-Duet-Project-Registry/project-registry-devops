@@ -98,8 +98,6 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
-- script: echo $(Build.BuildUri)
-
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
@@ -115,5 +113,5 @@ steps:
           **Message:** $(Build.SourceVersionMessage)
           **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
           **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
-          **Repo:** <https://github.com/$(Build.Repository.Name)>
+          **Repo:** <$(Build.Repository.Uri)/$(Build.SourceBranch)>
   displayName: Notification --> Task
