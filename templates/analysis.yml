@@ -59,13 +59,13 @@ steps:
       scannerMode: 'CLI'
       configMode: 'manual'
       cliProjectKey: $(sonarKeyPrefix)${{ parameters.microservice }}
-      cliSources: $(System.DefaultWorkingDirectory)${{ parameters.workDir }}
+      cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-  - script: cd $(System.DefaultWorkingDirectory)${{ parameters.workDir }} && npm ci
+  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm ci
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-  - script: cd $(System.DefaultWorkingDirectory)${{ parameters.workDir }} && npm run build
+  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm run build
     displayName: Build ${{ parameters.microservice }} --> Task
 
   - task: SonarCloudAnalyze@1
