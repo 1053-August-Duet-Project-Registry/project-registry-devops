@@ -94,5 +94,4 @@ steps:
       **Source:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.SourceBranch)>
       **Target:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.TargetBranch)>
       **Pulls:** <$(System.PullRequest.SourceRepositoryURI)/pulls>
-      **PR-ID:** $(System.PullRequest.PullRequestId)
   displayName: PR Notification --> Task
