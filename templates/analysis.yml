@@ -50,9 +50,6 @@ steps:
       cliProjectKey: ${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
       cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
-  
-  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && pwd && ls
-    displayName: Show path and contents
 
   - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm ci
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
@@ -99,11 +96,6 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
-- script: |
-    echo $PARAMETERS_DISCORDCHANNEL
-    echo $PARAMETERS_DISCORDKEY
-  displayName: show discord info
-  
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
