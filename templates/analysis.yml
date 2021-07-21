@@ -48,7 +48,7 @@ steps:
       scannerMode: 'CLI'
       configMode: 'manual'
       cliProjectKey: ${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
-      cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }
+      cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
   
   - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && pwd && ls
