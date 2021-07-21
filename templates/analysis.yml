@@ -98,6 +98,7 @@ steps:
     pollingTimeoutSec: '300'
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
+- ${{ if ne(Build.Reason, 'PullRequest') }}:  # <-- Notification for non-pr builds
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: always()
   inputs:
@@ -106,12 +107,30 @@ steps:
     name: $(System.TeamProject)
     messageType: 'content'
     content: | 
-          **__Analysis Report__**
-          **Status:** $(Agent.JobStatus)
-          **Branch:** $(Build.SourceBranch)
-          **Trigger:** $(Build.Reason)
-          **Message:** $(Build.SourceVersionMessage)
-          **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
-          **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
-          **Repo:** <$(Build.Repository.Uri)/$(Build.SourceBranch)>
+      **__Analysis Report__**
+      **Status:** $(Agent.JobStatus)
+      **Branch:** $(Build.SourceBranch)
+      **Trigger:** $(Build.Reason)
+      **Message:** $(Build.SourceVersionMessage)
+      **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
+      **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
+      **Repo:** <$(Build.Repository.Uri)/$(Build.SourceBranchName)>
+
+- ${{ if eq(Build.Reason, 'PullRequest') }}:  # <-- Notification for pr builds
+- task: 'ado-discord-webhook@1' # <-- See external requirements note above
+  condition: always()
+  inputs:
+    channelId: ${{ parameters.discordChannel }}
+    webhookKey: ${{ parameters.discordKey }}
+    name: $(System.TeamProject)
+    messageType: 'content'
+    content: | 
+      **__Analysis Report__**
+      **Status:** $(Agent.JobStatus)
+      **Branch:** $(Build.SourceBranch)
+      **Trigger:** $(Build.Reason)
+      **Message:** $(Build.SourceVersionMessage)
+      **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
+      **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
+      **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
   displayName: Notification --> Task
