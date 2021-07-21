@@ -105,6 +105,7 @@ steps:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
     name: $(System.TeamProject)
+    avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.0e667l6wb2NSrxUaSJLkiwHaHa%26pid%3DApi&f=1'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
@@ -122,15 +123,15 @@ steps:
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
-    name: $(System.TeamProject)
+    name: $(System.TeamProject) - PR
+    avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.t57fZPkb6fBVhHUXII8DSAHaHa%26pid%3DApi&f=1'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
       **Status:** $(Agent.JobStatus)
-      **Branch:** $(Build.SourceBranch)
-      **Trigger:** $(Build.Reason)
-      **Message:** $(Build.SourceVersionMessage)
       **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
-      **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
+      **PR-Source-URI:** <$(System.PullRequest.SourceRepositoryURI)>
+      **PR-Source-Branch:** $(System.PullRequest.SourceBranch)
+      **PR-Target-Branch:** $(System.PullRequest.TargetBranch)
   displayName: Notification --> Task
