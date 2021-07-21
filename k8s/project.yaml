@@ -13,14 +13,11 @@ spec:
     spec:
       containers:
       - name: project
-        image: 'danielhine/project-registry-project:latest'
+        image: 'hawkinsr/project-registry-devops_project:721.1'
         resources:
           requests:
             memory: "1024Mi"
-            cpu: "750m"
-          limits:
-            memory: "1024Mi"
-            cpu: "750m"
+            cpu: "375m"
         ports:
         - containerPort: 8082
         env:
@@ -31,6 +28,8 @@ spec:
               key: SPRING_CLOUD_CONSUL_HOST
         - name: SPRING_APPLICATION_NAME
           value: project-microservice
+        - name: SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME
+          value: project
 
 ---
 
@@ -39,7 +38,6 @@ kind: Service
 metadata:
   name: project
 spec:
-  type: NodePort
   selector:
     app: project
   ports:

@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: project-configmap
 data:
-  SPRING_CLOUD_CONSUL_HOST: consul
+  SPRING_CLOUD_CONSUL_HOST: http://consul
   REGISTRY_URL: gateway:8085/api/

@@ -13,14 +13,11 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: 'danielhine/project-registry-gateway:latest'
+        image: 'hawkinsr/project-registry-devops_gateway:721.1'
         resources:
           requests:
             memory: "1024Mi"
-            cpu: "750m"
-          limits:
-            memory: "1024Mi"
-            cpu: "750m"
+            cpu: "375m"
         ports:
         - containerPort: 8085
         env:
@@ -29,6 +26,8 @@ spec:
             configMapKeyRef:
               name: project-configmap
               key: SPRING_CLOUD_CONSUL_HOST
+        - name: SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME
+          value: gateway-microservice
 
 ---
 
