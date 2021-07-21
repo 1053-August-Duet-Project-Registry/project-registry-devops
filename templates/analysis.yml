@@ -93,4 +93,6 @@ steps:
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Source:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.SourceBranch)>
       **Target:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.TargetBranch)>
+      **Pulls:** <$(System.PullRequest.SourceRepositoryURI)/pulls>
+      **PR-ID:** $(System.PullRequest.PullRequestId)
   displayName: PR Notification --> Task
