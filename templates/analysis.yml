@@ -65,7 +65,7 @@ steps:
   - script: cd ${{ parameters.workDir }} && npm ci
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-  - script: npx ng build
+  - script: npm run build
     displayName: Build ${{ parameters.microservice }} --> Task
 
   - task: SonarCloudAnalyze@1
