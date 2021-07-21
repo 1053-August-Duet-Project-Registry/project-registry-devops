@@ -34,9 +34,9 @@ parameters:
   type: string
 - name: sonarUrlPrefix
   type: string
-- name: discordAnalysisChannel
+- name: discordChannel
   type: string
-- name: discordAnalysisKey
+- name: discordKey
   type: string
 
 steps:
