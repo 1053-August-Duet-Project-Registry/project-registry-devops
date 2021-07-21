@@ -64,7 +64,7 @@ steps:
         # Additional properties that will be passed to the scanner, 
         # Put one key=value per line, example:
         # sonar.exclusions=**/*.bin
-        sonar.javascript.lcov.reportPaths=${{ parameters.coveragePath }}
+        sonar.exclusions=*.karma.conf.js,src/**/*.spec.ts,src/environments/**/*,src/test.ts,src 
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
   
   - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && pwd && ls
