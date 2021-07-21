@@ -51,10 +51,12 @@ steps:
       cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm ci
+  - script: npm ci
+    workingDirectory: ./${{ parameters.workDir }}
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-  - script: cd $(System.DefaultWorkingDirectory)/${{ parameters.workDir }} && npm run build
+  - script: npm run build
+    workingDirectory: ./${{ parameters.workDir }}
     displayName: Build ${{ parameters.microservice }} --> Task
 
   - task: SonarCloudAnalyze@1
