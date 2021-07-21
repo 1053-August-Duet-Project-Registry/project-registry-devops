@@ -2,19 +2,19 @@
 #
 # External requirements:
 # ----------------------
-# In order to guard secrets, two variable groups must be present in the
+# In order to guard secrets, some variables groups must be pulled from the
 # ADO library and called in the pipeline YAML file before using this
 # template.
-# These variable groups have the following names and contents:
-# - project-registry-sonarcloud: stores sonarcloud variables/secrets
-#   - sonarKeyPrefix: the common prefix string for the sonar keys in the project
+# The variable groups for the original use case have the following names and contents:
+# - project-registry-sonarcloud:  stores sonarcloud variables/secrets
+#   - sonarKeyPrefix:             the common prefix string for the sonar keys in the project
 #       (requires a sonarCloud project key)
-#   - sonarNamePrefix: the common prefix string for the project names
-#   - sonarOrg: the sonar organization
-#   - sonarUrlPrefix: the common prefix string for the url for the results
-# - project-registry-discord: stores discord variables/secrets
-#   - discordAnalysisChannel: the output channel for discord analysis info
-#   - discordAnalysisKey: the webhook key associated with the above channel
+#   - sonarNamePrefix:            the common prefix string for the project names
+#   - sonarOrg:                   the sonar organization
+#   - sonarUrlPrefix:             the common prefix string for the url for the results
+# - project-registry-discord:     stores discord variables/secrets
+#   - discordAnalysisChannel:     the output channel for discord analysis info
+#   - discordAnalysisKey:         the webhook key associated with the above channel
 # Example of calling the variable groups:
 #   variables:
 #   - group: project-registry-sonarcloud
@@ -62,10 +62,10 @@ steps:
       cliSources: '${{ parameters.workDir }}'
     displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-  - script: cd ${{ parameters.workDir }} && npm ci
+  - script: cd $(System.DefaultWorkingDirectory)${{ parameters.workDir }} && npm ci
     displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-  - script: cd ${{ parameters.workDir }} && npm run build
+  - script: cd $(System.DefaultWorkingDirectory)${{ parameters.workDir }} && npm run build
     displayName: Build ${{ parameters.microservice }} --> Task
 
   - task: SonarCloudAnalyze@1
