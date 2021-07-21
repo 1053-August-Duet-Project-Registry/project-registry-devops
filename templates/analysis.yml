@@ -99,7 +99,7 @@ steps:
   displayName: Publish Analysis of ${{ parameters.microservice }} --> Task
 
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-  condition: and(always(),ne(variables.Build.Reason,'PullRequest'))
+  condition: and(always(), ne(variables.Build.Reason,'PullRequest'))
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
@@ -117,7 +117,7 @@ steps:
       **Repo:** <$(Build.Repository.Uri)/$(Build.SourceBranchName)>
 
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-  condition: and(always(), (variables.Build.Reason,'PullRequest'))
+  condition: and(always(), eq(variables.Build.Reason,'PullRequest'))
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
