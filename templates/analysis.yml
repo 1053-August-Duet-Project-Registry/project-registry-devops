@@ -1,31 +1,17 @@
-# SonarCloud configuration for Maven builds expects JDK 11
-#
-# Functionality Caveat: Angular builds not successfully tested
-# ---------------------
-# All code blocks using the angular flag have not been successfully tested.  
-# The code not been removed for three reasons:
-# 1) it functions without a template, and so provides a central record of how
-#    the Angular build tasks function
-# 2) we hope to revisit and debug the errors that prevent the template from
-#    functioning as expected.  As it stands, it appears that the Angular tasks
-#    do not function when a job checks out multiple repositories for some reason
-# 3) We believe that the code in this template is correct, but the error appears
-#    to exist on the side of the calling YAML file and associated setup, therefore
-#    a savvy user may be able to utilize the functionality even if we were not
-#    successful in doing so.
-# Therefore, the code is included with the caveat of not being successfully tested
+# This template is specifically for conducting static analysis of JDK 11 Maven builds using SonarCloud
 
 parameters:
+
+  # project configuration parameters:
 - name: microservice  # <-- e.g., gateway, account-microservice
   type: string
+- name: workDir       # <-- will need to override with multi-repo subdirectory
+  type: string        #     e.g., ./project-registry-tracking-microservice/)
 - name: coveragePath  # <-- may override the coverage path if desired
   type: string
   default: ''
-- name: workDir       # <-- will need to override with multi-repo subdirectory
-  type: string        #     e.g., ./project-registry-tracking-microservice/
-- name: angular       # <-- Not successfully tested; see note above
-  type: boolean       #     (default is a Maven build when angular = false
-  default: false      #      the Angular build steps will substitute when angular = true)
+
+  # external access parameters:
 - name: sonarKeyPrefix
   type: string
 - name: sonarNamePrefix
@@ -40,57 +26,32 @@ parameters:
   type: string
 
 steps:
-- ${{ if eq(parameters.angular, true) }}: # <-- Angular build not successfully tested; see note above
-  - task: SonarCloudPrepare@1 # <-- See external requirements note above
-    inputs:
-      SonarCloud: 'SonarCloud'
-      organization: ${{ parameters.sonarOrg }} 
-      scannerMode: 'CLI'
-      configMode: 'manual'
-      cliProjectKey: ${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
-      cliSources: $(System.DefaultWorkingDirectory)/${{ parameters.workDir }}
-    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
+- task: SonarCloudPrepare@1 # <-- See external requirements note above
+  inputs:
+    SonarCloud: 'SonarCloud'
+    organization: ${{ parameters.sonarOrg }}
+    scannerMode: 'Other'
+    extraProperties: |
+      sonar.projectKey=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
+      sonar.projectName=${{ parameters.sonarNamePrefix }}${{ parameters.microservice }}
+  displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-  - script: npm ci
-    workingDirectory: ./${{ parameters.workDir }}
-    displayName: Install dependencies for ${{ parameters.microservice }} --> Task
-
-  - script: npm run build
-    workingDirectory: ./${{ parameters.workDir }}
-    displayName: Build ${{ parameters.microservice }} --> Task
-
-  - task: SonarCloudAnalyze@1
-    displayName: Analyze ${{ parameters.microservice }} --> Task
-# End of Angular-specific Analysis Steps --> if
-
-- ${{ if eq(parameters.angular, false) }}:  # <-- Maven build is the default
-  - task: SonarCloudPrepare@1 # <-- See external requirements note above
-    inputs:
-      SonarCloud: 'SonarCloud'
-      organization: ${{ parameters.sonarOrg }}
-      scannerMode: 'Other'
-      extraProperties: |
-        sonar.projectKey=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
-        sonar.projectName=${{ parameters.sonarNamePrefix }}${{ parameters.microservice }}
-    displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
-
-  - task: 'Maven@3'
-    inputs:
-      mavenPomFile: ${{ parameters.workDir }}pom.xml
-      publishJUnitresults: true
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      codeCoverageToolOption: 'JaCoCo'
-      codeCoverageClassFilesDirectories: ${{ parameters.coveragePath }}
-      javaHomeOption: 'JDKVersion'
-      jdkVersionOption: '1.11'
-      mavenVersionOption: 'Default'
-      mavenOptions: '-Xmx3072m'
-      mavenAuthenticateFeed: false
-      effectivePomSkip: false
-      sonarQubeRunAnalysis: true
-      sqMavenPluginVersionChoice: 'latest'
-    displayName: Build/Analyze ${{ parameters.microservice }} --> Task
-# End of Maven-specific Analysis steps --> if
+- task: 'Maven@3'
+  inputs:
+    mavenPomFile: ${{ parameters.workDir }}pom.xml
+    publishJUnitresults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    codeCoverageToolOption: 'JaCoCo'
+    codeCoverageClassFilesDirectories: ${{ parameters.coveragePath }}
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenOptions: '-Xmx3072m'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: true
+    sqMavenPluginVersionChoice: 'latest'
+  displayName: Build/Analyze ${{ parameters.microservice }} --> Task
 
 - task: SonarCloudPublish@1
   condition: always()
