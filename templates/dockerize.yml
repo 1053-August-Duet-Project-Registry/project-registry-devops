@@ -15,8 +15,6 @@ parameters:
   type: string                      #     with the above repo
 - name: containerUrl                # <-- URL to the associated repo
   type: string
-- name: mvnVersionDir               # <-- the path to mvn-version
-  type: string
 - name: version                     # <-- the version is dynamically set using mvn-version
   type: string                      #     so there is no need to pass this parameter into
   default: undefined                #     the template; the default value could be any string
@@ -28,19 +26,28 @@ parameters:
   type: string
 
 steps:
+
 - script: |
-    sudo apt-get install zsh -y
-    sudo apt-get install xmlstarlet -y
-    sudo bash autogen.sh
-    sudo ./configure
-    sudo make
+    MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
+    mkdir mvn-version-1.2.1 && 
+    cd mvn-version-1.2.1 &&
+    curl -L $MVN_VERSION_DOWNLOAD | tar zxf ../${f##*/} 
+  workingDirectory: $(Build.SourcesDirectory)
+  displayName: download mvn-version
+
+- script: |
+    sudo apt-get install zsh -y &&
+    sudo apt-get install xmlstarlet -y &&
+    sudo bash autogen.sh &&
+    sudo ./configure &&
+    sudo make &&
     sudo make install
-  workingDirectory: ${{ parameters.mvnVersionDir }}
+  workingDirectory: $(Build.SourcesDirectory)/mvn-version-1.2.1
   displayName: Install mvn-version --> Task
     
 - script: |
-    VERSION=$(mvn-version .)
-    echo extracted $VERSION
+    VERSION=$(mvn-version .) &&
+    echo extracted $VERSION &&
     echo "##vso[task.setvariable variable=version]$VERSION"
   workingDirectory: $(Build.SourcesDirectory)/${{ parameters.imageName }} 
   displayName: Extract microservice version from pom.xml file --> Task
