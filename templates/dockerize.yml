@@ -41,6 +41,7 @@ steps:
 - script: |
     sudo apt-get install zsh -y &&
     sudo apt-get install xmlstarlet -y &&
+    pwd && ls &&
     sudo ./configure &&
     sudo make &&
     sudo make install
