@@ -1,6 +1,8 @@
 # This template is expects exactly ONE Dockerfile in the microservice repo
-# This template currently relies on an external variable called 'version' which
-# this template will overwrite, but the variable must be delcared outside the template
+# This template utilizes an external dependency called mvn-version to extract
+# the version of the Maven pom.xml file, which it expects to be in the main
+# directory for the microservice, with a foldername that is the same as the
+# image name that will be used for the docker image
 
 parameters:
 
@@ -15,9 +17,9 @@ parameters:
   type: string
 - name: mvnVersionDir               # <-- the path to mvn-version
   type: string
-- name: version
-  type: string
-  default: undefined
+- name: version                     # <-- the version is dynamically set using mvn-version
+  type: string                      #     so there is no need to pass this parameter into
+  default: undefined                #     the template; the default value could be any string
 
   # external access parameters:
 - name: discordChannel
