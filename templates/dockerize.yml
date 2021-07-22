@@ -45,7 +45,7 @@ steps:
     sudo ./configure &&
     sudo make &&
     sudo make install
-  workingDirectory: $(Build.SourcesDirectory)/mvn-version/1.2.1
+  workingDirectory: $(Build.SourcesDirectory)/mvn-version/1.2.1/mvn-version-1.2.1
   displayName: Install mvn-version --> Task
     
 - script: |
@@ -65,6 +65,7 @@ steps:
   displayName: Dockerize ${{ parameters.imageName }} and push --> Task
 
 - task: ado-discord-webhook@1
+  condition: always()
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
