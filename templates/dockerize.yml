@@ -33,7 +33,7 @@ steps:
     cd mvn-version &&
     curl -L $MVN_VERSION_DOWNLOAD |
       tee 1.2.1.tar.gz |
-      tar zx .-C 1.2.1
+      tar zx -C 1.2.1
   workingDirectory: $(Build.SourcesDirectory)
   displayName: download mvn-version
 
