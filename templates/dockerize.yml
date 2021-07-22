@@ -29,9 +29,11 @@ steps:
 
 - script: |
     MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
-    mkdir mvn-version-1.2.1 && 
-    cd mvn-version-1.2.1 &&
-    curl -L $MVN_VERSION_DOWNLOAD | tar zxf ../${f##*/} 
+    mkdir mvn-version && 
+    cd mvn-version &&
+    curl -L $MVN_VERSION_DOWNLOAD |
+      tee 1.2.1.tar.gz |
+      tar zx .-C 1.2.1
   workingDirectory: $(Build.SourcesDirectory)
   displayName: download mvn-version
 
