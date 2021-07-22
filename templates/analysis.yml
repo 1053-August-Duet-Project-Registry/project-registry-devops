@@ -5,8 +5,9 @@ parameters:
   # project configuration parameters:
 - name: microservice  # <-- e.g., gateway, account-microservice
   type: string
-- name: workDir       # <-- will need to override with multi-repo subdirectory
-  type: string        #     e.g., ./project-registry-tracking-microservice/)
+- name: workDir       # <-- allow override to sub-directory if needed
+  type: string
+  default: './'
 - name: coveragePath  # <-- may override the coverage path if desired
   type: string
   default: ''
