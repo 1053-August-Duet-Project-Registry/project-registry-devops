@@ -1,8 +1,7 @@
 # This template is expects exactly ONE Dockerfile in the microservice repo
-# This template utilizes an external dependency called mvn-version to extract
-# the version of the Maven pom.xml file, which it expects to be in the main
-# directory for the microservice, with a foldername that is the same as the
-# image name that will be used for the docker image
+# This template utilizes an external dependency called mvn-version-1.2.1 to 
+# extract the version of the Maven pom.xml file, which is then used as the
+# tag for the docker image that is pushed.
 
 parameters:
 
@@ -15,9 +14,12 @@ parameters:
   type: string                      #     with the above repo
 - name: containerUrl                # <-- URL to the associated repo
   type: string
-- name: version                     # <-- the version is dynamically set using mvn-version
-  type: string                      #     so there is no need to pass this parameter into
-  default: undefined                #     the template; the default value could be any string
+- name: version                     # <-- you should only use this parameter if the value of
+  type: string                      #     useDynamicVersion is set to false, otherwise it is 
+  default: undefined                #     overwritten dynamically using mvn-version-1.2.1
+- name: useDynamicVersion           # <-- if this is set to true then it will use the value
+  type: boolean                     #     specified by parameters.version rather than the version
+  default: true                     #     pulled from the pom.xml file (default behavior)
 
   # external access parameters:
 - name: discordChannel
@@ -26,35 +28,35 @@ parameters:
   type: string
 
 steps:
+- ${{ if eq(parameters.useDynamicVersion, true) }}:
+  - script: |
+      MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
+      mkdir mvn-version && 
+      cd mvn-version &&
+      mkdir 1.2.1 &&
+      curl -L $MVN_VERSION_DOWNLOAD |
+        tee 1.2.1.tar.gz |
+        tar zx -C 1.2.1
+    workingDirectory: $(Build.SourcesDirectory)
+    displayName: download mvn-version
 
-- script: |
-    MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
-    mkdir mvn-version && 
-    cd mvn-version &&
-    mkdir 1.2.1 &&
-    curl -L $MVN_VERSION_DOWNLOAD |
-      tee 1.2.1.tar.gz |
-      tar zx -C 1.2.1
-  workingDirectory: $(Build.SourcesDirectory)
-  displayName: download mvn-version
-
-- script: |
-    sudo apt-get install zsh -y &&
-    sudo apt-get install xmlstarlet -y &&
-    pwd && ls &&
-    sudo bash autogen.sh &&
-    sudo ./configure &&
-    sudo make &&
-    sudo make install
-  workingDirectory: $(Build.SourcesDirectory)/mvn-version/1.2.1/mvn-version-1.2.1
-  displayName: Install mvn-version --> Task
-    
-- script: |
-    VERSION=$(mvn-version .) &&
-    echo extracted $VERSION &&
-    echo "##vso[task.setvariable variable=version]$VERSION"
-  workingDirectory: $(Build.SourcesDirectory)
-  displayName: Extract microservice version from pom.xml file --> Task
+  - script: |
+      sudo apt-get install zsh -y &&
+      sudo apt-get install xmlstarlet -y &&
+      pwd && ls &&
+      sudo bash autogen.sh &&
+      sudo ./configure &&
+      sudo make &&
+      sudo make install
+    workingDirectory: $(Build.SourcesDirectory)/mvn-version/1.2.1/mvn-version-1.2.1
+    displayName: Install mvn-version --> Task
+      
+  - script: |
+      VERSION=$(mvn-version .) &&
+      echo extracted $VERSION &&
+      echo "##vso[task.setvariable variable=version]$VERSION"
+    workingDirectory: $(Build.SourcesDirectory)
+    displayName: Extract microservice version from pom.xml file --> Task
 
 - task: Docker@2
   inputs:
