@@ -22,7 +22,7 @@ parameters:
   default: true                     #     pulled from the pom.xml file (default behavior)
 - name: messageContent              # <-- Allow default notification message to be overriden
   type: string                      #     the imageName and version are also added as a final
-  default: |                        #     line appended to this, or the overridden message.
+  default: >-
     **__Dockerization Report__**
     **Status:** $(Agent.JobStatus)
     **Branch:** $(Build.SourceBranch)
