@@ -40,7 +40,6 @@ steps:
       sudo apt-get update &&
       sudo apt-get install zsh -y &&
       sudo apt-get install xmlstarlet -y &&
-      pwd && ls &&
       sudo bash autogen.sh &&
       sudo ./configure &&
       sudo make &&
