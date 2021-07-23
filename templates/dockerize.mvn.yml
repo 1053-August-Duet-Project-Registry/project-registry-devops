@@ -30,17 +30,11 @@ parameters:
 steps:
 - ${{ if eq(parameters.useDynamicVersion, true) }}:
   - script: |
-      MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
-      curl -L $MVN_VERSION_DOWNLOAD |
-        tee 1.2.1.tar.gz |
-        tar zx -C .
-    displayName: download mvn-version
-
-  - script: |
-      sudo apt-get update &&
-      sudo apt-get install zsh -y &&
-      sudo apt-get install xmlstarlet -y &&
-      sudo bash autogen.sh &&
+      command -v mvn-version >/dev/null 2>&1 ||
+      MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz' &&
+      curl -L $MVN_VERSION_DOWNLOAD | tee 1.2.1.tar.gz | tar zx -C . &&
+      sudo apt-get update && sudo apt-get install zsh xmlstarlet -y &&
+      sudo ./autogen.sh &&
       sudo ./configure &&
       sudo make &&
       sudo make install
