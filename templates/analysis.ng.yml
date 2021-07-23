@@ -33,9 +33,9 @@ steps:
     scannerMode: 'CLI'
     configMode: 'manual'
     cliProjectKey: ${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
-    cliSources: '${{ parameters.workDir }}/src,${{ parameters.workDir }}/e2e'
+    cliSources: '${{ parameters.workDir }}src,${{ parameters.workDir }}e2e'
     extraProperties: |
-      sonar.coverage.exclusions=**/*.spec.ts,${{ parameters.workDir }}/e2e/**/*
+      sonar.coverage.exclusions=**/*.spec.ts,${{ parameters.workDir }}e2e/**/*
       sonar.javascript.lcov.reportPaths=${{ parameters.workDir }}/coverage/${{ parameters.workDir }}/lcov.info
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
