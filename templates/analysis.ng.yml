@@ -43,7 +43,7 @@ steps:
   workingDirectory: ${{ parameters.workDir }}
   displayName: Install dependencies for ${{ parameters.microservice }} --> Task
 
-- script: npm build --prod
+- script: npx ng build --prod
   workingDirectory: ${{ parameters.workDir }}
   displayName: Build ${{ parameters.microservice }} --> Task
 
