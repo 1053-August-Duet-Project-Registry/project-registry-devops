@@ -87,7 +87,7 @@ steps:
     channelId: $(discordAnalysisChannel)
     webhookKey: $(discordAnalysisKey)
     name: $(System.TeamProject) - PR Analysis
-    avatar: 'https://github.com/jpbulloch5/jpbulloch5.github.io/blob/main/GitHubPR.png?raw=true'
+    avatar: 'https://raw.githubusercontent.com/jpbulloch5/jpbulloch5.github.io/main/GitHubPR.png'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
