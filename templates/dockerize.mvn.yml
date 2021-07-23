@@ -31,12 +31,9 @@ steps:
 - ${{ if eq(parameters.useDynamicVersion, true) }}:
   - script: |
       MVN_VERSION_DOWNLOAD='https://github.com/emcrisostomo/mvn-version/archive/refs/tags/1.2.1.tar.gz'
-      mkdir mvn-version && 
-      cd mvn-version &&
-      mkdir 1.2.1 &&
       curl -L $MVN_VERSION_DOWNLOAD |
         tee 1.2.1.tar.gz |
-        tar zx -C 1.2.1
+        tar zx -C .
     displayName: download mvn-version
 
   - script: |
@@ -48,7 +45,7 @@ steps:
       sudo ./configure &&
       sudo make &&
       sudo make install
-    workingDirectory: ./mvn-version/1.2.1/mvn-version-1.2.1
+    workingDirectory: ./mvn-version-1.2.1
     displayName: Install mvn-version --> Task
       
   - script: |
