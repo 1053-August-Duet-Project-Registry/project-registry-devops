@@ -17,7 +17,7 @@ parameters:
 - name: version                     # <-- you should only use this parameter if the value of
   type: string                      #     useDynamicVersion is set to false, otherwise it is 
   default: undefined                #     overwritten dynamically using mvn-version-1.2.1
-- name: useDynamicVersion           # <-- if this is set to true then it will use the value
+- name: useDynamicVersion           # <-- if this is set to false then it will use the value
   type: boolean                     #     specified by parameters.version rather than the version
   default: true                     #     pulled from the pom.xml file (default behavior)
 
