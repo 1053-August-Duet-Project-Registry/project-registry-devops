@@ -1,17 +1,15 @@
-# This template is specifically for conducting static analysis of JDK 11 Maven builds using SonarCloud
+# this template performs static analysis on an angular build project
 
 parameters:
+- name: microservice  # <-- It is assumed that the angular portion will be the frontend
+  type: string        #     however, it can be overwritten should the need arise
+  default: frontend
+- name: workDir       # <-- The working directory, can be relative or absolute, expects
+  type: string        #     a trailing '/' character.
+- name: coveragePath  # <-- The path to all the files that should be included in the code
+  type: string        #     coverage
 
-  # project configuration parameters:
-- name: microservice  # <-- e.g., gateway, account-microservice
-  type: string
-- name: workDir       # <-- will need to override with multi-repo subdirectory
-  type: string        #     e.g., ./project-registry-tracking-microservice/)
-- name: coveragePath  # <-- may override the coverage path if desired
-  type: string
-  default: ''
-
-  # external access parameters:
+# external access parameters:
 - name: sonarKeyPrefix
   type: string
 - name: sonarNamePrefix
@@ -26,32 +24,38 @@ parameters:
   type: string
 
 steps:
-- task: SonarCloudPrepare@1 # <-- See external requirements note above
+
+###  Need to come back and review this task later
+- task: SonarCloudPrepare@1
   inputs:
     SonarCloud: 'SonarCloud'
     organization: ${{ parameters.sonarOrg }}
-    scannerMode: 'Other'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: ${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
+    cliSources: '${{ parameters.workDir }}src,${{ parameters.workDir }}e2e'
     extraProperties: |
-      sonar.projectKey=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}
-      sonar.projectName=${{ parameters.sonarNamePrefix }}${{ parameters.microservice }}
+      sonar.coverage.exclusions=**/*.spec.ts,${{ parameters.workDir }}e2e/**/*
+      sonar.javascript.lcov.reportPaths=${{ parameters.workDir }}/coverage/${{ parameters.workDir }}/lcov.info
   displayName: Prepare Analysis for ${{ parameters.microservice }} --> Task
 
-- task: 'Maven@3'
-  inputs:
-    mavenPomFile: ${{ parameters.workDir }}pom.xml
-    publishJUnitresults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: ${{ parameters.coveragePath }}
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    mavenVersionOption: 'Default'
-    mavenOptions: '-Xmx3072m'
-    mavenAuthenticateFeed: false
-    effectivePomSkip: false
-    sonarQubeRunAnalysis: true
-    sqMavenPluginVersionChoice: 'latest'
-  displayName: Build/Analyze ${{ parameters.microservice }} --> Task
+- script: npm ci
+  workingDirectory: ${{ parameters.workDir }}
+  displayName: Install dependencies for ${{ parameters.microservice }} --> Task
+
+- script: npx ng build --prod
+  workingDirectory: ${{ parameters.workDir }}
+  displayName: Build ${{ parameters.microservice }} --> Task
+
+# this step is pending fixes from Andrew, or the devs
+- script: npx ng test --browsers ChromeHeadless --no-watch --code-coverage
+  continueOnError: true
+  workingDirectory: ${{ parameters.workDir }}
+  displayName: Test ${{ parameters.microservice }} --> Task
+
+- task: SonarCloudAnalyze@1
+  condition: always()
+  displayName: Analyze ${{ parameters.microservice }} --> Task
 
 - task: SonarCloudPublish@1
   condition: always()
@@ -62,10 +66,10 @@ steps:
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: and(always(), ne(variables['Build.Reason'],'PullRequest'))
   inputs:
-    channelId: ${{ parameters.discordChannel }}
-    webhookKey: ${{ parameters.discordKey }}
-    name: $(System.TeamProject)
-    avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.0e667l6wb2NSrxUaSJLkiwHaHa%26pid%3DApi&f=1'
+    channelId: $(discordAnalysisChannel)
+    webhookKey: $(discordAnalysisKey)
+    name: $(System.TeamProject) - Analysis
+    avatar: 'https://avatars2.githubusercontent.com/u/39168408?s=460&v=4'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
@@ -81,9 +85,9 @@ steps:
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: and(always(), eq(variables['Build.Reason'],'PullRequest'))
   inputs:
-    channelId: ${{ parameters.discordChannel }}
-    webhookKey: ${{ parameters.discordKey }}
-    name: $(System.TeamProject) - PR
+    channelId: $(discordAnalysisChannel)
+    webhookKey: $(discordAnalysisKey)
+    name: $(System.TeamProject) - PR Analysis
     avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.t57fZPkb6fBVhHUXII8DSAHaHa%26pid%3DApi&f=1'
     messageType: 'content'
     content: | 
