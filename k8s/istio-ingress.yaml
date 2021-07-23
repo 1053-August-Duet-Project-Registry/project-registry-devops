@@ -20,4 +20,13 @@ spec:
             name: gateway
             port:
               number: 8085
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 4200
 
