@@ -22,14 +22,15 @@ parameters:
   default: true                     #     pulled from the pom.xml file (default behavior)
 - name: messageContent              # <-- Allow default notification message to be overriden
   type: string                      #     the imageName and version are also added as a final
-  default: '**__Dockerization Report__**
-    **Status:** $(Agent.JobStatus)
-    **Branch:** $(Build.SourceBranch)
-    **Trigger:** $(Build.Reason)
-    **Message:** $(Build.SourceVersionMessage)
-    **Container Repo:** <${{ parameters.containerUrl }}>
-    **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
-    **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>'
+  default: >
+    **__Dockerization Report__**  
+    **Status:** $(Agent.JobStatus)  
+    **Branch:** $(Build.SourceBranch)  
+    **Trigger:** $(Build.Reason)  
+    **Message:** $(Build.SourceVersionMessage)  
+    **Container Repo:** <${{ parameters.containerUrl }}>  
+    **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>  
+    **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>  
 
   # external access parameters:
 - name: discordChannel
