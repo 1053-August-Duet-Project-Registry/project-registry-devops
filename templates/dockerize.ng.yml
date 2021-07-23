@@ -37,7 +37,7 @@ steps:
       repository: '${{ variables.containerRepo }}/${{ variables.imageName }}'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
-      tags: ${{ parameters.version }}
+      tags: '$(version)'
     displayName: Dockerize ${{ variables.imageName }} and push --> Task
 
   - task: ado-discord-webhook@1
