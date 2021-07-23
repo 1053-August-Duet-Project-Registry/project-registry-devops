@@ -13,6 +13,8 @@ parameters:
 - name: useDynamicVersion           # <-- if this is set to true then it will use the value
   type: boolean                     #     specified by parameters.version rather than the version
   default: true                     #     pulled from the package.json file (default behavior)
+- name: workDir
+  type: string
 
 # external access parameters:
 - name: discordChannel
