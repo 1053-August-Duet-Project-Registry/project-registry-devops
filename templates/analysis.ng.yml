@@ -1,27 +1,27 @@
 # this template performs static analysis on an angular build project
 
 parameters:
-  - name: microservice  # <-- It is assumed that the angular portion will be the frontend
-    type: string        #     however, it can be overwritten should the need arise
-    default: frontend
-  - name: workDir       # <-- The working directory, can be relative or absolute, expects
-    type: string        #     a trailing '/' character.
-  - name: coveragePath  # <-- The path to all the files that should be included in the code
-    type: string        #     coverage
+- name: microservice  # <-- It is assumed that the angular portion will be the frontend
+  type: string        #     however, it can be overwritten should the need arise
+  default: frontend
+- name: workDir       # <-- The working directory, can be relative or absolute, expects
+  type: string        #     a trailing '/' character.
+- name: coveragePath  # <-- The path to all the files that should be included in the code
+  type: string        #     coverage
 
-  # external access parameters:
-  - name: sonarKeyPrefix
-    type: string
-  - name: sonarNamePrefix
-    type: string
-  - name: sonarOrg
-    type: string
-  - name: sonarUrlPrefix
-    type: string
-  - name: discordChannel
-    type: string
-  - name: discordKey
-    type: string
+# external access parameters:
+- name: sonarKeyPrefix
+  type: string
+- name: sonarNamePrefix
+  type: string
+- name: sonarOrg
+  type: string
+- name: sonarUrlPrefix
+  type: string
+- name: discordChannel
+  type: string
+- name: discordKey
+  type: string
 
 steps:
 
