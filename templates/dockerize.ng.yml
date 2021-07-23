@@ -14,6 +14,12 @@ parameters:
   type: boolean                     #     specified by parameters.version rather than the version
   default: true                     #     pulled from the package.json file (default behavior)
 
+# external access parameters:
+- name: discordChannel
+  type: string
+- name: discordKey
+  type: string
+
 steps:
 - ${{ if eq(parameters.useDynamicVersion, true) }}:
   # script explanation: https://gist.github.com/DarrenN/8c6a5b969481725a4413
