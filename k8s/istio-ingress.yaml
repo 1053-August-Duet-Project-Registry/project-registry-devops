@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: istio
+    service.beta.kubernetes.io/azure-dns-label-name: revature-project-registry-test
+  name: ingress
+spec:
+  defaultBackend:
+    service:
+      name: frontend
+      port:
+        number: 4200
+  rules:
+  - http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 8085
+
