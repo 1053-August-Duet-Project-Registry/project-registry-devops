@@ -88,7 +88,7 @@ steps:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
     name: $(System.TeamProject) - PR Analysis
-    avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.t57fZPkb6fBVhHUXII8DSAHaHa%26pid%3DApi&f=1'
+    avatar: 'https://github.com/jpbulloch5/jpbulloch5.github.io/blob/main/GitHubPR.png?raw=true'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
