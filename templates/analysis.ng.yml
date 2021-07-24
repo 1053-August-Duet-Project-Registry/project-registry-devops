@@ -49,6 +49,7 @@ steps:
 
 # this step is pending fixes from Andrew, or the devs
 - script: npx ng test --browsers ChromeHeadless --no-watch --code-coverage
+  continueOnError: true
   workingDirectory: ${{ parameters.workDir }}
   displayName: Test ${{ parameters.microservice }} --> Task
 
@@ -65,8 +66,8 @@ steps:
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: and(always(), ne(variables['Build.Reason'],'PullRequest'))
   inputs:
-    channelId: $(discordAnalysisChannel)
-    webhookKey: $(discordAnalysisKey)
+    channelId: ${{ parameters.discordChannel }}
+    webhookKey: ${{ parameters.discordKey }}
     name: $(System.TeamProject) - Analysis
     avatar: 'https://avatars2.githubusercontent.com/u/39168408?s=460&v=4'
     messageType: 'content'
@@ -84,10 +85,10 @@ steps:
 - task: 'ado-discord-webhook@1' # <-- See external requirements note above
   condition: and(always(), eq(variables['Build.Reason'],'PullRequest'))
   inputs:
-    channelId: $(discordAnalysisChannel)
-    webhookKey: $(discordAnalysisKey)
+    channelId: ${{ parameters.discordChannel }}
+    webhookKey: ${{ parameters.discordKey }}
     name: $(System.TeamProject) - PR Analysis
-    avatar: 'https://raw.githubusercontent.com/jpbulloch5/jpbulloch5.github.io/main/GitHubPR.png'
+    avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.t57fZPkb6fBVhHUXII8DSAHaHa%26pid%3DApi&f=1'
     messageType: 'content'
     content: | 
       **__Analysis Report__**
