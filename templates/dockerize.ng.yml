@@ -47,8 +47,8 @@ steps:
   - task: ado-discord-webhook@1
     condition: always()
     inputs:
-      channelId: $(discordDockerChannel)
-      webhookKey: $(discordDockerKey)
+      channelId: $(discordChannel)
+      webhookKey: $(discordKey)
       name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
       avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
       messageType: 'content'
@@ -77,8 +77,8 @@ steps:
     - task: ado-discord-webhook@1
       condition: always()
       inputs:
-        channelId: $(discordDockerChannel)
-        webhookKey: $(discordDockerKey)
+        channelId: $(discordChannel)
+        webhookKey: $(discordKey)
         name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
         avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
         messageType: 'content'
