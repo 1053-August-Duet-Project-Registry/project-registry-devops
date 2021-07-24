@@ -14,6 +14,7 @@ parameters:
   type: string                      #     with the above repo
 - name: containerUrl                # <-- URL to the associated repo
   type: string
+  default: "public link unavailable"
 - name: version                     # <-- you should only use this parameter if the value of
   type: string                      #     useDynamicVersion is set to false, otherwise it is 
   default: undefined                #     overwritten dynamically using mvn-version-1.2.1
