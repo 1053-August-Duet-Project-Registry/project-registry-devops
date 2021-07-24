@@ -68,11 +68,11 @@ steps:
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
-    name: $(System.TeamProject) - Analysis
+    name: $(System.TeamProject) - $(Build.BuildId)
     avatar: 'https://avatars2.githubusercontent.com/u/39168408?s=460&v=4'
     messageType: 'content'
     content: | 
-      **__Analysis Report__**
+      **__PR Analysis Report__**
       **Status:** $(Agent.JobStatus)
       **Branch:** $(Build.SourceBranch)
       **Trigger:** $(Build.Reason)
@@ -87,7 +87,7 @@ steps:
   inputs:
     channelId: ${{ parameters.discordChannel }}
     webhookKey: ${{ parameters.discordKey }}
-    name: $(System.TeamProject) - PR Analysis
+    name: $(System.TeamProject) - $(Build.BuildId)
     avatar: 'https://github.com/jpbulloch5/jpbulloch5.github.io/blob/main/GitHubPR.png?raw=true'
     messageType: 'content'
     content: | 

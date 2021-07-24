@@ -62,7 +62,7 @@ steps:
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
-      name: '$(System.TeamProject) - Docker'
+      name: '$(System.TeamProject) - $(Build.BuildId)'
       avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
       messageType: 'content'
       content: |
@@ -92,7 +92,7 @@ steps:
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
-      name: '$(System.TeamProject) - Docker'
+      name: '$(System.TeamProject) - $(Build.BuildId)'
       avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
       messageType: 'content'
       content: |
