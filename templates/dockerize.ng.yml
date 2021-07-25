@@ -50,7 +50,7 @@ steps:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
       name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
-      avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
+      avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
       messageType: 'content'
       content: |
         **__Dockerization Report__**
@@ -80,7 +80,7 @@ steps:
         channelId: ${{ parameters.discordChannel }}
         webhookKey: ${{ parameters.discordKey }}
         name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
-        avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
+        avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
         messageType: 'content'
         content: |
           **__Dockerization Report__**
