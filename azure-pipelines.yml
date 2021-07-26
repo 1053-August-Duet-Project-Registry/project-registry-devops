@@ -2,14 +2,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-# - task: KubernetesManifest@0
-#   inputs:
-#     action: 'createSecret'
-#     kubernetesServiceConnection: 'k8s-team1-config-dev'
-#     namespace: 'team1'
-#     secretType: 'dockerRegistry'
-#     secretName: 'acr-secret'
-#     dockerRegistryEndpoint: 'acr-team1'
+- task: KubernetesManifest@0
+  inputs:
+    action: 'createSecret'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    secretType: 'dockerRegistry'
+    secretName: 'acr-secret'
+    dockerRegistryEndpoint: 'acr-team1'
 
 - task: Kubernetes@1
   inputs:
@@ -18,11 +18,6 @@ steps:
     namespace: 'team1'
     command: 'delete'
     arguments: '-f .'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-    secretName: 'acr-secret'
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: clear previous items
@@ -34,11 +29,6 @@ steps:
     namespace: 'team1'
     command: 'apply'
     arguments: '-f .'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-    secretName: 'acr-secret'
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: deploy new manifests
