@@ -4,6 +4,14 @@ pool:
 steps:
 - task: KubernetesManifest@0
   inputs:
+    action: 'delete'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    arguments: '-f ./k8s/'
+  displayName: clear AKS dev cluster
+
+- task: KubernetesManifest@0
+  inputs:
     action: 'createSecret'
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
@@ -11,15 +19,6 @@ steps:
     secretName: 'acr-secret'
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
   displayName: set ACR secret on cluster
-
-- task: KubernetesManifest@0
-  inputs:
-    action: 'delete'
-    kubernetesServiceConnection: 'k8s-team1-config-dev'
-    namespace: 'team1'
-    arguments: '-f ./k8s/'
-  displayName: clear AKS dev cluster
-
 
 - task: KubernetesManifest@0
   inputs:
