@@ -18,6 +18,12 @@ steps:
     namespace: 'team1'
     command: 'delete'
     arguments: '-f .'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+    secretName: 'acr-secret'
+    forceUpdate: false
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: clear previous items
@@ -29,6 +35,12 @@ steps:
     namespace: 'team1'
     command: 'apply'
     arguments: '-f .'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+    secretName: 'acr-secret'
+    forceUpdate: false
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: deploy new manifests
