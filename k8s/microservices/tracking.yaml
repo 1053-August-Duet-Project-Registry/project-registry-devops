@@ -18,10 +18,10 @@ spec:
         image: 'may24devopscontainers.azurecr.io/project-registry-tracking-microservice:0.0.1-SNAPSHOT'
         resources:
           requests:
-            memory: "1024Mi"
+            memory: "900Mi"
             cpu: "375m"
           limits:
-            memory: "1500Mi"
+            memory: "1100Mi"
             cpu: "400m"
         ports:
         - containerPort: 8083
