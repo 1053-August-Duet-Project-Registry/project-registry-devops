@@ -11,6 +11,8 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
       - name: frontend
         image: 'may24DevOpsContainers.azurecr.io/project-registry-frontend:0.0.0'

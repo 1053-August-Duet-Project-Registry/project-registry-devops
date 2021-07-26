@@ -11,6 +11,8 @@ spec:
       labels:
         app: tracking
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
       - name: tracking
         image: 'may24DevOpsContainers.azurecr.io/project-registry-tracking-microservice:0.0.1-SNAPSHOT'

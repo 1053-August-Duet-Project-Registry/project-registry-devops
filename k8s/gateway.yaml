@@ -11,6 +11,8 @@ spec:
       labels:
         app: gateway
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
       - name: gateway
         image: 'may24DevOpsContainers.azurecr.io/project-registry-gateway:0.0.1-SNAPSHOT'

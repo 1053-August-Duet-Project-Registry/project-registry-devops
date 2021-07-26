@@ -11,6 +11,8 @@ spec:
       labels:
         app: project
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
       - name: project
         image: 'may24DevOpsContainers.azurecr.io/project-registry-project-microservice:0.0.1-SNAPSHOT'
