@@ -14,6 +14,7 @@ parameters:
   type: string                      #     with the above repo
 - name: containerUrl                # <-- URL to the associated repo
   type: string
+  default: "public link unavailable"
 - name: version                     # <-- you should only use this parameter if the value of
   type: string                      #     useDynamicVersion is set to false, otherwise it is 
   default: undefined                #     overwritten dynamically using mvn-version-1.2.1
@@ -50,7 +51,7 @@ steps:
   - task: Docker@2
     inputs:
       containerRegistry: ${{ parameters.containerServiceConnection }}
-      repository: '${{ parameters.containerRepo }}/${{ parameters.imageName }}'
+      repository: '${{ parameters.imageName }}'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
       tags: '$(version)'
@@ -61,8 +62,8 @@ steps:
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
-      name: '$(System.TeamProject) - Docker'
-      avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
+      name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
+      avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
       messageType: 'content'
       content: |
         **__Dockerization Report__**
@@ -91,8 +92,8 @@ steps:
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
-      name: '$(System.TeamProject) - Docker'
-      avatar: 'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn3.iconfinder.com%2Fdata%2Ficons%2Flogos-and-brands-adobe%2F512%2F97_Docker-512.png&f=1&nofb=1'
+      name: '$(System.TeamProject) Dockerize - $(Build.BuildId)'
+      avatar: 'https://about.gitlab.com/images/devops-tools/azure-cr-logo.png'
       messageType: 'content'
       content: |
         **__Dockerization Report__**
