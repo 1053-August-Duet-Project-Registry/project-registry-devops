@@ -23,7 +23,7 @@ steps:
     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
     secretName: 'acr-secret'
-    forceUpdate: false
+    forceUpdate: true
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: clear previous items
@@ -40,7 +40,7 @@ steps:
     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
     secretName: 'acr-secret'
-    forceUpdate: false
+    forceUpdate: true
     workingDirectory: './k8s'
     outputFormat: 'yaml'
   displayName: deploy new manifests
