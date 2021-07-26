@@ -15,7 +15,7 @@ spec:
         - name: acr-secret
       containers:
       - name: frontend
-        image: 'may24devopscontainers.azurecr.io/project-registry-frontend:0.0.0'
+        image: 'may24devopscontainers.azurecr.io/may24devopscontainers/project-registry-frontend:0.0.0'
         resources:
           limits:
             memory: "128Mi"
