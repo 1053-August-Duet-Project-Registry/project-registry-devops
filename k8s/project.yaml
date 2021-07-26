@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project
+spec:
+  selector:
+    matchLabels:
+      app: project
+  template:
+    metadata:
+      labels:
+        app: project
+    spec:
+      containers:
+      - name: project
+        image: 'hawkinsr/project-registry-devops_project:721.1'
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "375m"
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SPRING_CLOUD_CONSUL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: project-configmap
+              key: SPRING_CLOUD_CONSUL_HOST
+        - name: SPRING_APPLICATION_NAME
+          value: project-microservice
+        - name: SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME
+          value: project
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: project
+spec:
+  selector:
+    app: project
+  ports:
+  - port: 8082
+    targetPort: 8082
+

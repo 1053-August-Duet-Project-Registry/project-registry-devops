@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tracking
+spec:
+  selector:
+    matchLabels:
+      app: tracking
+  template:
+    metadata:
+      labels:
+        app: tracking
+    spec:
+      containers:
+      - name: tracking
+        image: 'hawkinsr/project-registry-devops_tracking:721.1'
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "375m"
+        ports:
+        - containerPort: 8083
+        env:
+        - name: SPRING_CLOUD_CONSUL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: project-configmap
+              key: SPRING_CLOUD_CONSUL_HOST
+        - name: SPRING_APPLICATION_NAME
+          value: tracking-microservice
+        - name: SPRING_CLOUD_CONSUL_DISCOVERY_HOSTNAME
+          value: tracking-microservice
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tracking
+spec:
+  selector:
+    app: tracking
+  ports:
+  - port: 8083
+    targetPort: 8083
+
