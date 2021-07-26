@@ -11,13 +11,17 @@ steps:
     secretName: 'acr-secret'
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
 
-- task: KubernetesManifest@0
+- task: Kubernetes@1
   inputs:
-    action: 'deploy'
-    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'k8s-team1-config-dev'
     namespace: 'team1'
-    strategy: 'canary'
-    percentage: '10'
-    manifests: './k8s'
-    imagePullSecrets: 'acrSecret'
-    rolloutStatusTimeout: '300'
+    command: 'apply'
+    arguments: '.'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+    secretName: 'acr-secret'
+    workingDirectory: './k8s'
+    outputFormat: 'yaml'
