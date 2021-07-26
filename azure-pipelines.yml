@@ -9,7 +9,7 @@ steps:
     namespace: 'team1'
     secretType: 'dockerRegistry'
     secretName: 'acr-secret'
-    dockerRegistryEndpoint: 'acr-team1'
+    dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
 
 - task: Kubernetes@1
   inputs:
