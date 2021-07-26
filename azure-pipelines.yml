@@ -19,6 +19,6 @@ steps:
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
     manifests: |
-               k8s/microservices/*
                k8s/prerequisites/*
+               k8s/microservices/*
   displayName: initialize cluster
