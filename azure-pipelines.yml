@@ -16,6 +16,22 @@ steps:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
     namespace: 'team1'
+    command: 'delete'
+    arguments: '-f .'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+    secretName: 'acr-secret'
+    workingDirectory: './k8s'
+    outputFormat: 'yaml'
+  displayName: clear previous items
+
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'k8s-team1-config-dev'
+    namespace: 'team1'
     command: 'apply'
     arguments: '-f .'
     secretType: 'dockerRegistry'
@@ -25,3 +41,4 @@ steps:
     secretName: 'acr-secret'
     workingDirectory: './k8s'
     outputFormat: 'yaml'
+  displayName: deploy new manifests
