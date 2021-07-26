@@ -1,11 +1,3 @@
-resources:
-  repositories:
-  - repository: manifests
-    type: github
-    endpoint: Team1-Project3
-    name: 1053-August-Duet-Project-Registry/project-registry-devops
-    ref: refs/heads/feature-helm
-
 pool:
   vmImage: ubuntu-latest
 
@@ -26,6 +18,6 @@ steps:
     namespace: 'team1'
     strategy: 'canary'
     percentage: '10'
-    manifests: './k8s@manifests'
+    manifests: './k8s'
     imagePullSecrets: 'acrSecret'
     rolloutStatusTimeout: '300'
