@@ -11,9 +11,6 @@ steps:
     secretName: 'acr-secret'
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
 
-- script: kubectl delete -f . && kubectl apply -f .
-  workingDirectory: './k8s'
-  displayName: renew all manifests
 
 # - task: Kubernetes@1
 #   inputs:
@@ -48,3 +45,11 @@ steps:
 #     workingDirectory: './k8s'
 #     outputFormat: 'yaml'
 #   displayName: deploy new manifests
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    manifests: '*'
+    rolloutStatusTimeout: '300'
