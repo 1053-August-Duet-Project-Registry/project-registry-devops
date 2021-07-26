@@ -52,4 +52,4 @@ steps:
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
     manifests: 'k8s/*'
-    rolloutStatusTimeout: '0'
+    rolloutStatusTimeout: '1200'
