@@ -18,6 +18,9 @@ spec:
           requests:
             memory: "1024Mi"
             cpu: "375m"
+          limits:
+            memory: "1500Mi"
+            cpu: "400m"
         ports:
         - containerPort: 8085
         env:
