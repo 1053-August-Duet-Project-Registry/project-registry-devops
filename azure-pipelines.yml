@@ -16,7 +16,7 @@ steps:
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
     secretType: 'dockerRegistry'
-    secretName: 'acrSecret'
+    secretName: 'acr-secret'
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
 
 - task: KubernetesManifest@0
