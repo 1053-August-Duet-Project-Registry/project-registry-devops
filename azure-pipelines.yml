@@ -11,36 +11,40 @@ steps:
     secretName: 'acr-secret'
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
 
-- task: Kubernetes@1
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'k8s-team1-config-dev'
-    namespace: 'team1'
-    command: 'delete'
-    arguments: '-f .'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-    secretName: 'acr-secret'
-    forceUpdate: true
-    workingDirectory: './k8s'
-    outputFormat: 'yaml'
-  displayName: clear previous items
+- script: kubectl delete -f . && kubectl apply -f .
+  workingDirectory: './k8s'
+  displayName: renew all manifests
 
-- task: Kubernetes@1
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'k8s-team1-config-dev'
-    namespace: 'team1'
-    command: 'apply'
-    arguments: '-f .'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-    azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-    azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-    secretName: 'acr-secret'
-    forceUpdate: true
-    workingDirectory: './k8s'
-    outputFormat: 'yaml'
-  displayName: deploy new manifests
+# - task: Kubernetes@1
+#   inputs:
+#     connectionType: 'Kubernetes Service Connection'
+#     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
+#     namespace: 'team1'
+#     command: 'delete'
+#     arguments: '-f .'
+#     secretType: 'dockerRegistry'
+#     containerRegistryType: 'Azure Container Registry'
+#     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+#     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+#     secretName: 'acr-secret'
+#     forceUpdate: true
+#     workingDirectory: './k8s'
+#     outputFormat: 'yaml'
+#   displayName: clear previous items
+
+# - task: Kubernetes@1
+#   inputs:
+#     connectionType: 'Kubernetes Service Connection'
+#     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
+#     namespace: 'team1'
+#     command: 'apply'
+#     arguments: '-f .'
+#     secretType: 'dockerRegistry'
+#     containerRegistryType: 'Azure Container Registry'
+#     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
+#     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
+#     secretName: 'acr-secret'
+#     forceUpdate: true
+#     workingDirectory: './k8s'
+#     outputFormat: 'yaml'
+#   displayName: deploy new manifests
