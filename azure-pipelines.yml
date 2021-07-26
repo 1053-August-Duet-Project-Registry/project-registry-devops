@@ -28,7 +28,6 @@ steps:
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
     manifests: 'k8s/account.yaml'
-    containers: 'may24DevOpsContainers.azurecr.io/project-registry-account-microservice:0.0.1-SNAPSHOT'
     imagePullSecrets: 'acr-secret'
     rolloutStatusTimeout: '1200'
   displayName: deploy to AKS dev cluster
