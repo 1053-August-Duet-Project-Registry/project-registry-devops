@@ -12,39 +12,14 @@ steps:
     dockerRegistryEndpoint: 'RevatureProject3May24DevOpsContainersACR'
   displayName: set ACR secret on cluster
 
-# - task: Kubernetes@1
-#   inputs:
-#     connectionType: 'Kubernetes Service Connection'
-#     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
-#     namespace: 'team1'
-#     command: 'delete'
-#     arguments: '-f .'
-#     secretType: 'dockerRegistry'
-#     containerRegistryType: 'Azure Container Registry'
-#     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-#     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-#     secretName: 'acr-secret'
-#     forceUpdate: true
-#     workingDirectory: './k8s'
-#     outputFormat: 'yaml'
-#   displayName: clear previous items
+- task: KubernetesManifest@0
+  inputs:
+    action: 'delete'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    arguments: '-f ./k8s/'
+  displayName: clear AKS dev cluster
 
-# - task: Kubernetes@1
-#   inputs:
-#     connectionType: 'Kubernetes Service Connection'
-#     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
-#     namespace: 'team1'
-#     command: 'apply'
-#     arguments: '-f .'
-#     secretType: 'dockerRegistry'
-#     containerRegistryType: 'Azure Container Registry'
-#     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
-#     azureContainerRegistry: 'may24devopscontainers.azurecr.io'
-#     secretName: 'acr-secret'
-#     forceUpdate: true
-#     workingDirectory: './k8s'
-#     outputFormat: 'yaml'
-#   displayName: deploy new manifests
 
 - task: KubernetesManifest@0
   inputs:
@@ -54,3 +29,5 @@ steps:
     manifests: 'k8s/account.yaml'
     containers: 'may24DevOpsContainers.azurecr.io/project-registry-account-microservice:0.0.1-SNAPSHOT'
     imagePullSecrets: 'acr-secret'
+    rolloutStatusTimeout: '1200'
+  displayName: deploy to AKS dev cluster
