@@ -2,16 +2,8 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-# - task: KubernetesManifest@0
-#   inputs:
-#     action: 'delete'
-#     kubernetesServiceConnection: 'k8s-team1-config-dev'
-#     namespace: 'team1'
-#     arguments: '-f ./k8s/'
-#   displayName: clear AKS dev cluster
 
 - task: KubernetesManifest@0
-  condition: always()
   inputs:
     action: 'createSecret'
     kubernetesServiceConnection: 'k8s-team1-config-dev'
@@ -22,11 +14,28 @@ steps:
   displayName: set ACR secret on cluster
 
 - task: KubernetesManifest@0
-  condition: always()
   inputs:
     action: 'deploy'
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
-    manifests: 'k8s/*'
+    manifests: 'k8s/configmap.yaml|k8s/consul.yaml|k8s/istio-ingress.yaml'
     rolloutStatusTimeout: '12'
-  displayName: deploy to AKS dev cluster
+  displayName: deploy prerequisites to cluster
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    manifests: 'k8s/account.yaml|k8s/gateway.yaml|k8s/project.yaml|k8s/tracking.yaml'
+    rolloutStatusTimeout: '12'
+  displayName: deploy back-end microservices to AKS dev cluster
+
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'k8s-team1-config-dev'
+    namespace: 'team1'
+    manifests: 'k8s/frontend.yaml'
+    rolloutStatusTimeout: '12'
+  displayName: deploy back-end microservices to AKS dev cluster
