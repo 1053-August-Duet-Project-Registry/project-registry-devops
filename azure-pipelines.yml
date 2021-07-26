@@ -28,6 +28,5 @@ steps:
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
     manifests: 'k8s/account.yaml'
-    imagePullSecrets: 'acr-secret'
     rolloutStatusTimeout: '12'
   displayName: deploy to AKS dev cluster
