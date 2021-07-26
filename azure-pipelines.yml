@@ -17,7 +17,7 @@ steps:
     kubernetesServiceEndpoint: 'k8s-team1-config-dev'
     namespace: 'team1'
     command: 'apply'
-    arguments: '.'
+    arguments: '-f .'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
     azureSubscriptionEndpointForSecrets: 'RevatureProject3ARMSubscription'
