@@ -51,5 +51,5 @@ steps:
     action: 'deploy'
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
-    manifests: 'k8s/*'
+    manifests: 'k8s/account.yaml'
     rolloutStatusTimeout: '1200'
