@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 'hawkinsr/project-registry-devops_frontend:721.1'
+        image: 'may24DevOpsContainers.azurecr.io/project-registry-frontend:0.0.0'
         resources:
           limits:
             memory: "128Mi"

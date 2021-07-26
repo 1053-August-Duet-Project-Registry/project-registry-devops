@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: project
-        image: 'hawkinsr/project-registry-devops_project:721.1'
+        image: 'may24DevOpsContainers.azurecr.io/project-registry-project-microservice:0.0.1-SNAPSHOT'
         resources:
           requests:
             memory: "1024Mi"

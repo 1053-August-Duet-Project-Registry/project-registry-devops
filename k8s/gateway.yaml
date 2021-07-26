@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: 'hawkinsr/project-registry-devops_gateway:721.1'
+        image: 'may24DevOpsContainers.azurecr.io/project-registry-gateway:0.0.1-SNAPSHOT'
         resources:
           requests:
             memory: "1024Mi"
