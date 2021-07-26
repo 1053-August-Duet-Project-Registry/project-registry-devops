@@ -12,7 +12,7 @@ spec:
         app: account
     spec:
       imagePullSecrets:
-        - name: acr-secret
+      - name: acr-secret
       containers:
       - name: account
         image: 'may24DevOpsContainers.azurecr.io/project-registry-account-microservice:0.0.1-SNAPSHOT'
