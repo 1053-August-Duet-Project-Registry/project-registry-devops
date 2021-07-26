@@ -18,6 +18,6 @@ steps:
     action: 'deploy'
     kubernetesServiceConnection: 'k8s-team1-config-dev'
     namespace: 'team1'
-    manifests: 'k8s/microservices/account.yaml'
+    manifests: 'k8s/microservices/*'
     rolloutStatusTimeout: '12'
   displayName: initialize cluster
