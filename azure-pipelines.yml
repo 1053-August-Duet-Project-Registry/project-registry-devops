@@ -11,7 +11,7 @@ pool:
 variables:
   # to initialize the staging environment k8sServiceConnection should be 'k8s-team1-config-staging'
   # to initialize the development environment k8sServiceConnection should be 'k8s-team1-config-dev'
-  k8sServiceConnection: 'k8s-team1-config-dev'
+  k8sServiceConnection: 'k8s-team1-config-staging'
 
   containerServiceConnection: 'acr-team1'         # <-- the service connection for the container registry
   namespace: 'team1'                              # <-- the application's k8s namespace
