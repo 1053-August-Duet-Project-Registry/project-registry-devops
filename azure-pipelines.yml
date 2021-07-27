@@ -32,7 +32,7 @@ steps:
 - task: KubernetesManifest@0
   inputs:
     action: 'createSecret'
-    kubernetesServiceConnection: ${{ variables.k8sServiceConnection }}
+    kubernetesServiceConnection: ${{ parameters.k8sServiceConnection }}
     namespace: ${{ variables.namespace }}
     secretType: 'dockerRegistry'
     secretName: 'acr-secret'
@@ -42,7 +42,7 @@ steps:
 - task: KubernetesManifest@0
   inputs:
     action: 'deploy'
-    kubernetesServiceConnection: ${{ variables.k8sServiceConnection }}
+    kubernetesServiceConnection: ${{ parameters.k8sServiceConnection }}
     namespace: ${{ variables.namespace }}
     manifests: ${{ variables.prereqManifestPath }}
   displayName: initialize cluster prerequisites
@@ -50,7 +50,7 @@ steps:
 - task: KubernetesManifest@0
   inputs:
     action: 'deploy'
-    kubernetesServiceConnection: ${{ variables.k8sServiceConnection }}
+    kubernetesServiceConnection: ${{ parameters.k8sServiceConnection }}
     namespace: ${{ variables.namespace }}
     manifests: ${{ variables.microserviceManifestPath }}
   displayName: initialize cluster microservices
