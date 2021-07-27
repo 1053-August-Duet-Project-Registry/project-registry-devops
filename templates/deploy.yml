@@ -1,0 +1,98 @@
+# This template will apply the specified manifest to the specified clusters when PR's are made to the specified branches
+
+parameters:
+
+# project configuration parameters:
+- name: containerRegistry # <-- The container registry service connection name from which images
+  type: string            #     are pulled in the k8s manifest
+- name: devCluster        # <-- The service connection for the development environment cluster
+  type: string
+- name: stagingCluster    # <-- The service connection for the staging environment cluster
+  type: string
+- name: devBranch         # <-- PR's targeting this branch will trigger a deployment to
+  type: string            #     the dev cluster (e.g., 'branch-dev')
+- name: stagingBranch     # <-- PR's targeting this branch will trigger a deployment to
+  type: string            #     the staging cluster (e.g., 'main', or 'branch-staging')
+- name: namespace         # <-- the namespace within the cluster where the manifest will be applied
+  type: string
+- name: manifest          # <-- relative or absolute path to the kubernetes manafest to be applied
+  type: string            #     (e.g., 'k8s/microservices/gateway.yml')
+
+# external access parameters:
+- name: discordChannel
+  type: string
+- name: discordKey
+  type: string
+
+steps:
+- ${{if eq(variables['Build.Reason'],'PullRequest') }}:
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}')
+    inputs:
+      action: 'createSecret'
+      kubernetesServiceConnection: ${{ parameters.devCluster }}
+      namespace: ${{ parameters.namespace }}
+      secretType: 'dockerRegistry'
+      secretName: 'acr-secret'
+      dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
+    displayName: Dev - set imagePullSecret on cluster
+
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}')
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: ${{ parameters.devCluster }}
+      namespace: ${{ parameters.namespace }}
+      manifests: ${{ parameters.manifest }}
+    displayName: Dev - apply ${{ parameters.manifest }} to cluster
+
+  - task: 'ado-discord-webhook@1' # <-- See external requirements note above
+    condition: and(always(), eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}'))
+    inputs:
+      channelId: ${{ parameters.discordChannel }}
+      webhookKey: ${{ parameters.discordKey }}
+      name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
+      avatar: 'https://static.thenounproject.com/png/745489-200.png'
+      messageType: 'content'
+      content: | 
+        **__Deploy to Dev Report__**
+        **Status:** $(Agent.JobStatus)
+        **Namespace:** ${{ parameters.namespace }}
+        **Manifest:**  ${{ parameters.manifest }}
+    displayName: Dev - Notification --> Task
+
+      
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
+    inputs:
+      action: 'createSecret'
+      kubernetesServiceConnection: ${{ parameters.stagingCluster }}
+      namespace: ${{ parameters.namespace }}
+      secretType: 'dockerRegistry'
+      secretName: 'acr-secret'
+      dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
+    displayName: Staging - set imagePullSecret on cluster
+
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: ${{ parameters.stagingCluster }}
+      namespace: ${{ parameters.namespace }}
+      manifests: ${{ parameters.manifest }}
+    displayName: Staging - apply ${{ parameters.manifest }} to cluster
+  
+  - task: 'ado-discord-webhook@1' # <-- See external requirements note above
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
+    inputs:
+      channelId: ${{ parameters.discordChannel }}
+      webhookKey: ${{ parameters.discordKey }}
+      name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
+      avatar: 'https://cdn4.iconfinder.com/data/icons/performances/500/performances-act-staging-entertainment_8-512.png'
+      messageType: 'content'
+      content: | 
+        **__Deploy to Dev Report__**
+        **Status:** $(Agent.JobStatus)
+        **Namespace:** ${{ parameters.namespace }}
+        **Manifest:**  ${{ parameters.manifest }}
+    displayName: Staging - Notification --> Task

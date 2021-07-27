@@ -38,7 +38,7 @@ steps:
   - task: Docker@2
     inputs:
       containerRegistry: ${{ parameters.containerServiceConnection }}
-      repository: '${{ parameters.containerRepo }}/${{ parameters.imageName }}'
+      repository: '${{ parameters.imageName }}'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
       tags: '$(version)'
@@ -59,7 +59,7 @@ steps:
         **Trigger:** $(Build.Reason)
         **Message:** $(Build.SourceVersionMessage)
         **Image:** ${{ parameters.imageName }}:$(version)
-        **Container Repo:** <${{ variables.containerUrl }}>
+        **Container Repo:** <${{ parameters.containerUrl }}>
         **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
         **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
     displayName: Notification --> Task
@@ -67,12 +67,12 @@ steps:
   - ${{ if eq(parameters.useDynamicVersion, false) }}:
     - task: Docker@2
       inputs:
-        containerRegistry: ${{ variables.containerServiceConnection }}
-        repository: '${{ variables.containerRepo }}/${{ variables.imageName }}'
+        containerRegistry: ${{ parameters.containerServiceConnection }}
+        repository: '${{ parameters.imageName }}'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: ${{ parameters.version }}
-      displayName: Dockerize ${{ variables.imageName }} and push --> Task
+      displayName: Dockerize ${{ parameters.imageName }} and push --> Task
     
     - task: ado-discord-webhook@1
       condition: always()
@@ -88,8 +88,8 @@ steps:
           **Branch:** $(Build.SourceBranch)
           **Trigger:** $(Build.Reason)
           **Message:** $(Build.SourceVersionMessage)
-          **Image:** ${{ variables.imageName }}:${{ variables.version }}
-          **Container Repo:** <${{ variables.containerUrl }}>
+          **Image:** ${{ parameters.imageName }}:${{ parameters.version }}
+          **Container Repo:** <${{ parameters.containerUrl }}>
           **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
           **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
       displayName: Notification --> Task
