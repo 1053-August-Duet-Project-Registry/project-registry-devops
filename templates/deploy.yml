@@ -29,8 +29,8 @@ steps:
     displayName: set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
-    inputs:
     condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}')
+    inputs:
       action: 'deploy'
       kubernetesServiceConnection: ${{ parameters.devCluster }}
       namespace: ${{ parameters.namespace }}
