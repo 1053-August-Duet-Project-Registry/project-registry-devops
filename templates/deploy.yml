@@ -27,7 +27,7 @@ parameters:
 steps:
 - ${{if eq(variables['Build.Reason'],'PullRequest') }}:
   - task: KubernetesManifest@0
-    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}')
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}')
     inputs:
       action: 'createSecret'
       kubernetesServiceConnection: ${{ parameters.devCluster }}
@@ -38,7 +38,7 @@ steps:
     displayName: set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
-    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}')
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}')
     inputs:
       action: 'deploy'
       kubernetesServiceConnection: ${{ parameters.devCluster }}
@@ -47,7 +47,7 @@ steps:
     displayName: apply ${{ parameters.manifest }} to cluster
 
   - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-    condition: and(always(), eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}'))
+    condition: and(always(), eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}'))
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
@@ -63,7 +63,7 @@ steps:
 
       
   - task: KubernetesManifest@0
-    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
     inputs:
       action: 'createSecret'
       kubernetesServiceConnection: ${{ parameters.stagingCluster }}
@@ -74,7 +74,7 @@ steps:
     displayName: set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
-    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
     inputs:
       action: 'deploy'
       kubernetesServiceConnection: ${{ parameters.stagingCluster }}
@@ -83,7 +83,7 @@ steps:
     displayName: apply ${{ parameters.manifest }} to cluster
   
   - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
     inputs:
       channelId: ${{ parameters.discordChannel }}
       webhookKey: ${{ parameters.discordKey }}
