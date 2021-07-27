@@ -26,69 +26,73 @@ parameters:
 
 steps:
 - ${{if eq(variables['Build.Reason'],'PullRequest') }}:
-  - ${{ if eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}') }}:
-    - task: KubernetesManifest@0
-      inputs:
-        action: 'createSecret'
-        kubernetesServiceConnection: ${{ parameters.devCluster }}
-        namespace: ${{ parameters.namespace }}
-        secretType: 'dockerRegistry'
-        secretName: 'acr-secret'
-        dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
-      displayName: set imagePullSecret on cluster
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}')
+    inputs:
+      action: 'createSecret'
+      kubernetesServiceConnection: ${{ parameters.devCluster }}
+      namespace: ${{ parameters.namespace }}
+      secretType: 'dockerRegistry'
+      secretName: 'acr-secret'
+      dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
+    displayName: set imagePullSecret on cluster
 
-    - task: KubernetesManifest@0
-      inputs:
-        action: 'deploy'
-        kubernetesServiceConnection: ${{ parameters.devCluster }}
-        namespace: ${{ parameters.namespace }}
-        manifests: ${{ parameters.manifest }}
-      displayName: apply ${{ parameters.manifest }} to cluster
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}')
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: ${{ parameters.devCluster }}
+      namespace: ${{ parameters.namespace }}
+      manifests: ${{ parameters.manifest }}
+    displayName: apply ${{ parameters.manifest }} to cluster
 
-    - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-      inputs:
-        channelId: ${{ parameters.discordChannel }}
-        webhookKey: ${{ parameters.discordKey }}
-        name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
-        avatar: 'https://static.thenounproject.com/png/745489-200.png'
-        messageType: 'content'
-        content: | 
-          **__Deploy to Dev Report__**
-          **Status:** $(Agent.JobStatus)
-          **Namespace:** ${{ parameters.namespace }}
-          **Manifest:**  ${{ parameters.manifest }}
-      displayName: PR Notification --> Task
+  - task: 'ado-discord-webhook@1' # <-- See external requirements note above
+    condition: and(always(), eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.devBranch }}'))
+    inputs:
+      channelId: ${{ parameters.discordChannel }}
+      webhookKey: ${{ parameters.discordKey }}
+      name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
+      avatar: 'https://static.thenounproject.com/png/745489-200.png'
+      messageType: 'content'
+      content: | 
+        **__Deploy to Dev Report__**
+        **Status:** $(Agent.JobStatus)
+        **Namespace:** ${{ parameters.namespace }}
+        **Manifest:**  ${{ parameters.manifest }}
+    displayName: PR Notification --> Task
 
       
-  - ${{ if eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') }}:
-    - task: KubernetesManifest@0
-      inputs:
-        action: 'createSecret'
-        kubernetesServiceConnection: ${{ parameters.stagingCluster }}
-        namespace: ${{ parameters.namespace }}
-        secretType: 'dockerRegistry'
-        secretName: 'acr-secret'
-        dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
-      displayName: set imagePullSecret on cluster
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    inputs:
+      action: 'createSecret'
+      kubernetesServiceConnection: ${{ parameters.stagingCluster }}
+      namespace: ${{ parameters.namespace }}
+      secretType: 'dockerRegistry'
+      secretName: 'acr-secret'
+      dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
+    displayName: set imagePullSecret on cluster
 
-    - task: KubernetesManifest@0
-      inputs:
-        action: 'deploy'
-        kubernetesServiceConnection: ${{ parameters.stagingCluster }}
-        namespace: ${{ parameters.namespace }}
-        manifests: ${{ parameters.manifest }}
-      displayName: apply ${{ parameters.manifest }} to cluster
-    
-    - task: 'ado-discord-webhook@1' # <-- See external requirements note above
-      inputs:
-        channelId: ${{ parameters.discordChannel }}
-        webhookKey: ${{ parameters.discordKey }}
-        name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
-        avatar: 'https://cdn4.iconfinder.com/data/icons/performances/500/performances-act-staging-entertainment_8-512.png'
-        messageType: 'content'
-        content: | 
-          **__Deploy to Staging Report__**
-          **Status:** $(Agent.JobStatus)
-          **Namespace:** ${{ parameters.namespace }}
-          **Manifest:**  ${{ parameters.manifest }}
-      displayName: PR Notification --> Task
+  - task: KubernetesManifest@0
+    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    inputs:
+      action: 'deploy'
+      kubernetesServiceConnection: ${{ parameters.stagingCluster }}
+      namespace: ${{ parameters.namespace }}
+      manifests: ${{ parameters.manifest }}
+    displayName: apply ${{ parameters.manifest }} to cluster
+  
+  - task: 'ado-discord-webhook@1' # <-- See external requirements note above
+    condition: eq(variables['System.PullRequest.TargetBranch'],'refs/heads/${{ parameters.stagingBranch }}') 
+    inputs:
+      channelId: ${{ parameters.discordChannel }}
+      webhookKey: ${{ parameters.discordKey }}
+      name: '$(System.TeamProject) Deployment - $(Build.BuildId)'
+      avatar: 'https://cdn4.iconfinder.com/data/icons/performances/500/performances-act-staging-entertainment_8-512.png'
+      messageType: 'content'
+      content: | 
+        **__Deploy to Dev Report__**
+        **Status:** $(Agent.JobStatus)
+        **Namespace:** ${{ parameters.namespace }}
+        **Manifest:**  ${{ parameters.manifest }}
+    displayName: PR Notification --> Task
