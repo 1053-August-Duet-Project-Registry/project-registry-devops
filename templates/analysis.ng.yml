@@ -77,7 +77,7 @@ steps:
       **Branch:** $(Build.SourceBranch)
       **Trigger:** $(Build.Reason)
       **Message:** $(Build.SourceVersionMessage)
-      **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
+      **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranchName)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Repo:** <$(Build.Repository.Uri)/tree/$(Build.SourceBranchName)>
   displayName: Notification --> Task
@@ -93,7 +93,7 @@ steps:
     content: | 
       **__PR Analysis Report__**
       **Status:** $(Agent.JobStatus)
-      **Report:** <${{ parameters.sonarUrlPrefix }}$(Build.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
+      **Report:** <${{ parameters.sonarUrlPrefix }}$(System.PullRequest.SourceBranch)&id=${{ parameters.sonarKeyPrefix }}${{ parameters.microservice }}>
       **Logs:** <$(System.CollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)&view=logs>
       **Source:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.SourceBranch)>
       **Target:** <$(Build.Repository.Uri)/tree/$(System.PullRequest.TargetBranch)>
