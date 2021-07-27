@@ -38,7 +38,7 @@ steps:
   - task: Docker@2
     inputs:
       containerRegistry: ${{ parameters.containerServiceConnection }}
-      repository: '${{ parameters.containerRepo }}/${{ parameters.imageName }}'
+      repository: '${{ parameters.imageName }}'
       command: 'buildAndPush'
       Dockerfile: '**/Dockerfile'
       tags: '$(version)'
@@ -68,7 +68,7 @@ steps:
     - task: Docker@2
       inputs:
         containerRegistry: ${{ variables.containerServiceConnection }}
-        repository: '${{ variables.containerRepo }}/${{ variables.imageName }}'
+        repository: '${{ variables.imageName }}'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
         tags: ${{ parameters.version }}
