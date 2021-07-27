@@ -18,9 +18,6 @@ parameters:
   values:
   - 'k8s-team1-config-dev'
   - 'k8s-team1-config-staging'
-- name: targetCluster
-  type: string
-  default: 'k8s-team1-config-staging'
 
 variables:
   containerServiceConnection: 'acr-team1'         # <-- the service connection for the container registry
@@ -50,11 +47,8 @@ stages:
         - task: HelmDeploy@0
           displayName: "Deploy Istio Base"
           inputs:
-            connectionType: 'Azure Resource Manager'
-            azureSubscription: 'RevatureProject3ARMSubscription'
-            azureResourceGroup: 'may24_devops_staging'
-            kubernetesCluster: 'may24_devops_aks_staging'
-            useClusterAdmin: true
+            connectionType: 'Kubernetes Service Connection'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'FilePath'
@@ -66,7 +60,7 @@ stages:
           displayName: "Deploy Istio Discovery"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'FilePath'
@@ -79,7 +73,7 @@ stages:
           displayName: "Deploy Istio Ingress"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'FilePath'
@@ -91,7 +85,7 @@ stages:
           displayName: "Get Prometheus/Grafana Chart Repo"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'repo'
             arguments: 'add prometheus-community https://prometheus-community.github.io/helm-charts'
@@ -100,7 +94,7 @@ stages:
           displayName: "Get Loki Chart Repo"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'repo'
             arguments: 'add grafana https://grafana.github.io/helm-charts'
@@ -109,7 +103,7 @@ stages:
           displayName: "Repo Update"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'repo'
             arguments: 'update'
@@ -118,7 +112,7 @@ stages:
           displayName: "Install Prometheus"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'Name'
@@ -130,7 +124,7 @@ stages:
           displayName: "Install Loki"
           inputs:
             connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            kubernetesServiceConnection: '${{ parameters.k8sServiceConnection }}'
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'Name'
