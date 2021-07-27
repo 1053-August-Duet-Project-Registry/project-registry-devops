@@ -4,15 +4,22 @@
 # The ingress IP address is how you access the application, so...
 # BE CAREFUL!!!
 trigger: none
+pr: none
 
 pool:
   vmImage: ubuntu-latest
 
-variables:
-  # to initialize the staging environment k8sServiceConnection should be 'k8s-team1-config-staging'
-  # to initialize the development environment k8sServiceConnection should be 'k8s-team1-config-dev'
-  k8sServiceConnection: 'k8s-team1-config-staging'
+parameters:
+# to initialize the staging environment k8sServiceConnection should be 'k8s-team1-config-staging'
+# to initialize the development environment k8sServiceConnection should be 'k8s-team1-config-dev'
+- name: k8sServiceConnection
+  type: string
+  default: 'k8s-team1-config-dev'
+  values:
+  - 'k8s-team1-config-dev'
+  - 'k8s-team1-config-staging'
 
+variables:
   containerServiceConnection: 'acr-team1'         # <-- the service connection for the container registry
   namespace: 'team1'                              # <-- the application's k8s namespace
   prereqManifestPath: 'k8s/prerequisites/*'       # <-- the path to the directory that contains the
