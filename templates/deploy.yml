@@ -35,7 +35,7 @@ steps:
       secretType: 'dockerRegistry'
       secretName: 'acr-secret'
       dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
-    displayName: set imagePullSecret on cluster
+    displayName: Dev - set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
     condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}')
@@ -44,7 +44,7 @@ steps:
       kubernetesServiceConnection: ${{ parameters.devCluster }}
       namespace: ${{ parameters.namespace }}
       manifests: ${{ parameters.manifest }}
-    displayName: apply ${{ parameters.manifest }} to cluster
+    displayName: Dev - apply ${{ parameters.manifest }} to cluster
 
   - task: 'ado-discord-webhook@1' # <-- See external requirements note above
     condition: and(always(), eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.devBranch }}'))
@@ -59,7 +59,7 @@ steps:
         **Status:** $(Agent.JobStatus)
         **Namespace:** ${{ parameters.namespace }}
         **Manifest:**  ${{ parameters.manifest }}
-    displayName: PR Notification --> Task
+    displayName: Dev - Notification --> Task
 
       
   - task: KubernetesManifest@0
@@ -71,7 +71,7 @@ steps:
       secretType: 'dockerRegistry'
       secretName: 'acr-secret'
       dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
-    displayName: set imagePullSecret on cluster
+    displayName: Staging - set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
     condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
@@ -80,7 +80,7 @@ steps:
       kubernetesServiceConnection: ${{ parameters.stagingCluster }}
       namespace: ${{ parameters.namespace }}
       manifests: ${{ parameters.manifest }}
-    displayName: apply ${{ parameters.manifest }} to cluster
+    displayName: Staging - apply ${{ parameters.manifest }} to cluster
   
   - task: 'ado-discord-webhook@1' # <-- See external requirements note above
     condition: eq(variables['System.PullRequest.TargetBranch'],'${{ parameters.stagingBranch }}') 
@@ -95,4 +95,4 @@ steps:
         **Status:** $(Agent.JobStatus)
         **Namespace:** ${{ parameters.namespace }}
         **Manifest:**  ${{ parameters.manifest }}
-    displayName: PR Notification --> Task
+    displayName: Staging - Notification --> Task
