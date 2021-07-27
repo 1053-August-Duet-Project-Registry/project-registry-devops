@@ -1,5 +1,8 @@
-# This pipeline is NEVER triggered automatically.  This pipeline is used for initialization
-# of a new (or cleared) kubernetes cluster.
+# This pipeline is NEVER triggered automatically.
+# This pipeline is used for initialization of a new (or cleared) kubernetes cluster.
+# Running this pipeline unnecessarily may cause the ingress IP address to reset.
+# The ingress IP address is how you access the application, so...
+# BE CAREFUL!!!
 trigger: none
 
 pool:
@@ -11,7 +14,7 @@ variables:
   namespace: 'team1'
   prereqManifestPath: 'k8s/prerequisites/*'
   microserviceManifestPath: 'k8s/microservices/*'
-  
+
 steps:
 
 - task: KubernetesManifest@0
