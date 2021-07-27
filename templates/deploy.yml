@@ -13,7 +13,7 @@ parameters:
 - name: namespace         # <-- the namespace within the cluster where the manifest will be applied
   type: string
 - name: manifest          # <-- relative or absolute path to the kubernetes manafest to be applied
-  type: string
+  type: string            #     (e.g., 'k8s/microservices/gateway.yml')
 
 steps:
 - ${{if eq(variables['Build.Reason'],'PullRequest') }}:
