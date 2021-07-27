@@ -1,11 +1,17 @@
+# This pipeline is NEVER triggered automatically.  This pipeline is used for initialization
+# of a new (or cleared) kubernetes cluster.
+trigger: none
+
 pool:
   vmImage: ubuntu-latest
+
 variables:
   containerServiceConnection: 'acr-team1'
   k8sServiceConnection: 'k8s-team1-config-dev'
   namespace: 'team1'
   prereqManifestPath: 'k8s/prerequisites/*'
   microserviceManifestPath: 'k8s/microservices/*'
+  
 steps:
 
 - task: KubernetesManifest@0
