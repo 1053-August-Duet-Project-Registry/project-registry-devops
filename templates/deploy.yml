@@ -1,4 +1,4 @@
-# This template will apply the specified manifest to the specified clusters when PR's are made to the specified branches
+# This template will apply the specified manifest to the specified cluster
 
 parameters:
 
@@ -6,11 +6,11 @@ parameters:
 - name: containerRegistry # <-- The container registry service connection name from which images
   type: string            #     are pulled in the k8s manifest
 - name: cluster           # <-- The service connection for the cluster
-  type: string          #     the staging cluster (e.g., 'main', or 'branch-staging')
+  type: string
 - name: namespace         # <-- the namespace within the cluster where the manifest will be applied
   type: string
 - name: manifest          # <-- relative or absolute path to the kubernetes manafest to be applied
-  type: string            #     (e.g., 'k8s/microservices/gateway.yml')
+  type: string            #     (e.g., './k8s/microservices/gateway.yml')
 
 # external access parameters:
 - name: discordChannel
