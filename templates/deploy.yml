@@ -27,7 +27,7 @@ steps:
       secretType: 'dockerRegistry'
       secretName: 'acr-secret'
       dockerRegistryEndpoint: ${{ parameters.containerRegistry }}
-    displayName: Dev - set imagePullSecret on cluster
+    displayName: set imagePullSecret on cluster
 
   - task: KubernetesManifest@0
     inputs:
