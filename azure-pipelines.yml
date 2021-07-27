@@ -50,8 +50,11 @@ stages:
         - task: HelmDeploy@0
           displayName: "Deploy Istio Base"
           inputs:
-            connectionType: 'Kubernetes Service Connection'
-            kubernetesServiceConnection: '${{ parameters.targetCluster }}'
+            connectionType: 'Azure Resource Manager'
+            azureSubscription: 'RevatureProject3ARMSubscription'
+            azureResourceGroup: 'may24_devops_staging'
+            kubernetesCluster: 'may24_devops_aks_staging'
+            useClusterAdmin: true
             namespace: 'istio-system'
             command: 'upgrade'
             chartType: 'FilePath'
