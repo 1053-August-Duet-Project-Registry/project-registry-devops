@@ -18,11 +18,11 @@ spec:
         image: 'may24devopscontainers.azurecr.io/project-registry-project-microservice:0.0.1-SNAPSHOT'
         resources:
           requests:
-            memory: "1024Mi"
-            cpu: "375m"
+            memory: "850Mi"
+            cpu: "175m"
           limits:
-            memory: "1500Mi"
-            cpu: "400m"
+            memory: "1024Mi"
+            cpu: "200m"
         ports:
         - containerPort: 8082
         env:
