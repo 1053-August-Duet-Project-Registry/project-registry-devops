@@ -15,7 +15,7 @@ spec:
         - name: acr-secret
       containers:
       - name: tracking
-        image: 'may24devopscontainers.azurecr.io/project-registry-tracking-microservice:0.0.1-SNAPSHOT'
+        image: 'may24devopscontainers.azurecr.io/project-registry-tracking-microservice:1.0.1-SNAPSHOT'
         resources:
           requests:
             memory: "850Mi"

@@ -15,7 +15,7 @@ spec:
       - name: acr-secret
       containers:
       - name: account
-        image: 'may24devopscontainers.azurecr.io/project-registry-account-microservice:0.0.1-SNAPSHOT'
+        image: 'may24devopscontainers.azurecr.io/project-registry-account-microservice:1.0.1-SNAPSHOT'
         resources:
           requests:
             memory: "850Mi"
