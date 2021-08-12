@@ -11,7 +11,8 @@ spec:
       port:
         number: 4200
   rules:
-  - http:
+  - host: "*.registry.matthewcradit.com"
+    http:
       paths:
       - path: /api
         pathType: Prefix
@@ -20,7 +21,8 @@ spec:
             name: gateway
             port:
               number: 8085
-  - http:
+  - host: "*.registry.matthewcradit.com"
+    http:
       paths:
       - path: /
         pathType: Prefix

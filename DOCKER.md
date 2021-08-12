@@ -32,7 +32,7 @@
 
 To ensure that the project is working correctly, navigate to `localhost:4200` to see if the front end is up and running.
 
-### Note that at this time, `project-registry-gateway` must be on branch `feature-consul-gateway` and `project-registry-frontend` must be on branch `DevOps-Working`.
+### Note that the frontend Dockerfile needs to have to '--prod' flag to run locally for testing. The '--prod' flag is used to specify the registry_url necessary for Kubernetes deployments.
 
 ## Debugging Tips
 
